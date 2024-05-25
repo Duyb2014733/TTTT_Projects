@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const VehicleRouter = require("./app/routes/Vehicle.route");
 
 const app = express();
 
@@ -9,6 +10,8 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.json({ message: "Chào mừng bạn đến để kết nối ứng dụng đặt vé." });
 });
+
+app.use("/api/vehicle/", VehicleRouter);
 
 app.use((req, res, next) => {
   return next(new ApiError(404, "Không tìm thấy tài nguyên"));
