@@ -22,8 +22,7 @@ class VehicleService {
   // Lấy danh sách tất cả các xe
   async getAllVehicles() {
     try {
-      const cursor = await Vehicle.find();
-      return await cursor.toArray();
+      return await Vehicle.find();
     } catch (error) {
       throw error;
     }

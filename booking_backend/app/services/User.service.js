@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require("../models/User.model");
 
 class UserService {
   // Tạo mới một người dùng
@@ -13,7 +13,16 @@ class UserService {
   // Lấy thông tin của một người dùng dựa trên ID
   async getUserById(userId) {
     try {
-      return await User.findById(userId);
+      return await User.findById(userId).populate("bookings");
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Lấy danh sách tất cả người dùng
+  async getAllUsers() {
+    try {
+      return await User.find().populate("bookings");
     } catch (error) {
       throw error;
     }
@@ -22,7 +31,9 @@ class UserService {
   // Cập nhật thông tin của một người dùng
   async updateUser(userId, userData) {
     try {
-      return await User.findByIdAndUpdate(userId, userData, { new: true });
+      return await User.findByIdAndUpdate(userId, userData, {
+        new: true,
+      }).populate("bookings");
     } catch (error) {
       throw error;
     }
@@ -31,7 +42,16 @@ class UserService {
   // Xóa một người dùng dựa trên ID
   async deleteUser(userId) {
     try {
-      await User.findByIdAndDelete(userId);
+      return await User.findByIdAndDelete(userId);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Xóa tất cả người dùng
+  async deleteAllUsers() {
+    try {
+      return await User.deleteMany({});
     } catch (error) {
       throw error;
     }
