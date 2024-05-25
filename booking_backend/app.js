@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const VehicleRouter = require("./app/routes/Vehicle.route");
+const UserRouter = require("./app/routes/User.route");
+const ApiError = require("./app/api-error");
 
 const app = express();
 
@@ -12,6 +14,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/vehicle/", VehicleRouter);
+app.use("/api/user/", UserRouter);
 
 app.use((req, res, next) => {
   return next(new ApiError(404, "Không tìm thấy tài nguyên"));
