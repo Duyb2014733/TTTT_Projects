@@ -1,5 +1,5 @@
 const BusStationService = require("../services/BusStation.service");
-const ApiError = require("../utils/ApiError");
+const ApiError = require("../api-error");
 
 const busStationService = new BusStationService();
 

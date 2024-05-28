@@ -1,5 +1,5 @@
 const RouteService = require("../services/Route.service");
-const ApiError = require("../utils/ApiError");
+const ApiError = require("../api-error");
 
 const routeService = new RouteService();
 

@@ -1,5 +1,5 @@
 const BookingService = require("../services/Booking.service");
-const ApiError = require("../utils/ApiError");
+const ApiError = require("../api-error");
 
 const bookingService = new BookingService();
 

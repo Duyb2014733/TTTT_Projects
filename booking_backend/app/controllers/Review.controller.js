@@ -1,5 +1,5 @@
 const ReviewService = require("../services/Review.service");
-const ApiError = require("../utils/ApiError");
+const ApiError = require("../api-error");
 
 const reviewService = new ReviewService();
 

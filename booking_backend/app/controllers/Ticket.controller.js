@@ -1,5 +1,5 @@
 const TicketService = require("../services/Ticket.service");
-const ApiError = require("../utils/ApiError");
+const ApiError = require("../api-error");
 
 const ticketService = new TicketService();
 

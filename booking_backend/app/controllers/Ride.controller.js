@@ -1,5 +1,5 @@
 const RideService = require("../services/Ride.service");
-const ApiError = require("../utils/ApiError");
+const ApiError = require("../api-error");
 
 const rideService = new RideService();
 

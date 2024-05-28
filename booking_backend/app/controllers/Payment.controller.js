@@ -1,5 +1,5 @@
 const PaymentService = require("../services/Payment.service");
-const ApiError = require("../utils/ApiError");
+const ApiError = require("../api-error");
 
 const paymentService = new PaymentService();
 
