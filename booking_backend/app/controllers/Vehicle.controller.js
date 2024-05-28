@@ -1,4 +1,5 @@
 const VehicleService = require("../services/Vehicle.service");
+
 const vehicleService = new VehicleService();
 
 exports.createVehicle = async (req, res, next) => {

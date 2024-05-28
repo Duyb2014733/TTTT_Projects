@@ -1,5 +1,6 @@
 const UserService = require("../services/User.service");
 const ApiError = require("../api-error");
+
 const userService = new UserService();
 
 exports.createUser = async (req, res, next) => {
