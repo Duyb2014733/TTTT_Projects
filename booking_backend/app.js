@@ -4,6 +4,7 @@ const VehicleRouter = require("./app/routes/Vehicle.route");
 const UserRouter = require("./app/routes/User.route");
 const TicketRouter = require("./app/routes/Ticket.route");
 const RouteRouter = require("./app/routes/Route.route");
+const RideRouter = require("./app/routes/Ride.route");
 const ApiError = require("./app/api-error");
 
 const app = express();
@@ -19,6 +20,7 @@ app.use("/api/vehicle/", VehicleRouter);
 app.use("/api/user/", UserRouter);
 app.use("/api/ticket/", TicketRouter);
 app.use("/api/route/", RouteRouter);
+app.use("/api/ride/", RideRouter);
 
 app.use((req, res, next) => {
   return next(new ApiError(404, "Không tìm thấy tài nguyên"));
