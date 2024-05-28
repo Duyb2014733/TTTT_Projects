@@ -2,7 +2,7 @@
   "name": "booking_backend",
   "version": "1.0.0",
   "main": "server.js",
-  "script": {
+  "scripts": {
     "start": "nodemon server.js"
   },
   "author": "Duy Le",
