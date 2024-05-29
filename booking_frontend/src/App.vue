@@ -1,13 +1,21 @@
+<template>
+  <div id="app">
+    <AppHeader />
+    <router-view />
+  </div>
+</template>
+
 <script>
+import AppHeader from './components/AppHeader.vue'
+
 export default {
+  name: 'App',
+  components: {
+    AppHeader
+  }
 }
 </script>
-<template>
-  <h1>Hello, Vue.js!</h1>
-</template>
+
 <style>
-.page {
-  max-width: 400px;
-  margin: auto;
-}
+/* Các style tổng thể cho ứng dụng */
 </style>
