@@ -1,11 +1,13 @@
 const UserService = require("../services/User.service");
 const ApiError = require("../api-error");
+const bcrypt = require("bcrypt");
 
 const userService = new UserService();
 
-exports.createUser = async (req, res, next) => {
+exports.registerUser = async (req, res, next) => {
   try {
-    const userData = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(req.body.password, salt);
     const newUser = await userService.createUser(userData);
     res.status(201).json(newUser);
   } catch (error) {
