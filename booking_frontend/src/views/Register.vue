@@ -5,22 +5,24 @@
                 <form class="form" @submit.prevent="register">
                     <p class="form-title">Create your account</p>
                     <div class="input-container form-group">
-                        <input v-model="name" type="text" placeholder="Enter name" class="form-control" required
-                            minlength="6" maxlength="20">
+                        <input v-model="registerData.name" type="text" placeholder="Enter name" class="form-control"
+                            required minlength="6" maxlength="20">
                     </div>
                     <div class="input-container form-group">
-                        <input v-model="email" type="email" placeholder="Enter email" class="form-control" required
-                            minlength="10" maxlength="50">
+                        <input v-model="registerData.email" type="email" placeholder="Enter email" class="form-control"
+                            required minlength="10" maxlength="50">
                     </div>
                     <div class="input-container form-group">
-                        <input v-model="phone" type="text" placeholder="Enter phone" class="form-control" required>
+                        <input v-model="registerData.phone" type="text" placeholder="Enter phone" class="form-control"
+                            required>
                     </div>
                     <div class="input-container form-group">
-                        <input v-model="address" type="text" placeholder="Enter address" class="form-control" required>
+                        <input v-model="registerData.address" type="text" placeholder="Enter address"
+                            class="form-control" required>
                     </div>
                     <div class="input-container form-group">
-                        <input v-model="password" type="password" placeholder="Enter password" class="form-control"
-                            required minlength="6">
+                        <input v-model="registerData.password" type="password" placeholder="Enter password"
+                            class="form-control" required minlength="6">
                     </div>
                     <button type="submit" class="submit">
                         Sign up
@@ -31,43 +33,51 @@
                         <router-link :to="{ name: 'Login' }">Sign in</router-link>
                     </p>
                 </form>
+                <Notification v-if="errorMessage" :message="errorMessage" />
+                <Notification v-if="successMessage" :message="successMessage" />
             </div>
         </div>
     </div>
 </template>
+
 <script>
-import { ref } from 'vue';
+import Notification from "@/components/Notification.vue";
+import UserService from "@/services/UserService";
 
 export default {
-    name: 'Register',
-    setup() {
-        const name = ref('');
-        const email = ref('');
-        const phone = ref('');
-        const address = ref('');
-        const password = ref('');
-
-        const register = () => {
-            // Registration logic here
-            console.log({
-                name: name.value,
-                email: email.value,
-                phone: phone.value,
-                address: address.value,
-                password: password.value
-            });
-        };
-
+    components: {
+        Notification
+    },
+    data() {
         return {
-            name,
-            email,
-            phone,
-            address,
-            password,
-            register
+            registerData: {
+                name: '',
+                email: '',
+                phone: '',
+                address: '',
+                password: ''
+            },
+            errorMessage: '',
+            successMessage: ''
         };
+    },
+    methods: {
+        async register() {
+            try {
+                await UserService.registerUser(this.registerData);
+                this.successMessage = 'Account created successfully!';
+                setTimeout(() => {
+                    this.successMessage = '';
+                }, 2000);
+            } catch (error) {
+                this.errorMessage = error.message;
+                setTimeout(() => {
+                    this.errorMessage = '';
+                }, 2000);
+            }
+        }
     }
-};
+}
 </script>
 <style scoped>
 .form {

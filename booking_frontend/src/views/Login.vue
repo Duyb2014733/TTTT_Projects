@@ -20,27 +20,30 @@
                         No account?
                         <router-link :to="{ name: 'Register' }">Sign up</router-link>
                     </p>
-                    <div v-if="errorMessage" class="alert alert-danger mt-3" role="alert">
-                        {{ errorMessage }}
-                    </div>
                 </form>
+                <Notification v-if="errorMessage" :message="errorMessage" type="error" />
+                <Notification v-if="successMessage" :message="successMessage" type="success" />
             </div>
         </div>
     </div>
 </template>
 
-
 <script>
+import Notification from "@/components/Notification.vue";
 import UserService from "@/services/UserService";
 
 export default {
+    components: {
+        Notification
+    },
     data() {
         return {
             loginData: {
                 email: '',
                 password: ''
             },
-            errorMessage: ''
+            errorMessage: '',
+            successMessage: ''
         };
     },
     methods: {
@@ -48,12 +51,16 @@ export default {
             try {
                 const user = await this.loginUser(this.loginData);
                 // localStorage.setItem('role', user.vai_tro);
-                this.$router.push({ name: 'booking' }); // Adjust the route name as needed
+                this.successMessage = 'Login successful!';
+                setTimeout(() => {
+                    this.successMessage = '';
+                    this.$router.push({ name: 'admin' });
+                }, 2000);
             } catch (error) {
                 this.errorMessage = error.message;
                 setTimeout(() => {
                     this.errorMessage = '';
-                }, 2000); // Clear the error message after 2 seconds
+                }, 2000);
             }
         },
         async loginUser(loginData) {
@@ -67,7 +74,6 @@ export default {
     }
 }
 </script>
-
 
 <style scoped>
 .form {

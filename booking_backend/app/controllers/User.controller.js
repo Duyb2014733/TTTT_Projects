@@ -6,11 +6,24 @@ const userService = new UserService();
 
 exports.registerUser = async (req, res, next) => {
   try {
+    // Tạo salt để hash password
     const salt = await bcrypt.genSalt(10);
-    const hashed = await bcrypt.hash(req.body.password, salt);
-    const newUser = await userService.createUser(userData);
+    // Hash password sử dụng salt
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+    // Tạo một đối tượng người dùng mới với password đã hash
+    const newUser = await userService.createUser({
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      address: req.body.address,
+      password: hashedPassword, // Sử dụng password đã hash
+    });
+
+    // Trả về thông tin của người dùng mới đã tạo
     res.status(201).json(newUser);
   } catch (error) {
+    // Nếu có lỗi xảy ra, chuyển đến middleware xử lý lỗi tiếp theo
     next(error);
   }
 };
