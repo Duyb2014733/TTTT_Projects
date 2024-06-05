@@ -1,4 +1,5 @@
 const VehicleService = require("../services/Vehicle.service");
+const ApiError = require("../api-error");
 
 const vehicleService = new VehicleService();
 
@@ -17,7 +18,7 @@ exports.getVehicleById = async (req, res, next) => {
     const vehicleId = req.params.id;
     const vehicle = await vehicleService.getVehicleById(vehicleId);
     if (!vehicle) {
-      return res.status(404).json({ message: "Vehicle not found" });
+      throw new ApiError(404, "Vehicle not found");
     }
     res.status(200).json(vehicle);
   } catch (error) {
@@ -43,7 +44,7 @@ exports.updateVehicle = async (req, res, next) => {
       vehicleData
     );
     if (!updatedVehicle) {
-      return res.status(404).json({ message: "Vehicle not found" });
+      throw new ApiError(404, "Vehicle not found");
     }
     res.status(200).json(updatedVehicle);
   } catch (error) {
@@ -56,9 +57,9 @@ exports.deleteVehicle = async (req, res, next) => {
     const vehicleId = req.params.id;
     const deletedVehicle = await vehicleService.deleteVehicle(vehicleId);
     if (!deletedVehicle) {
-      return res.status(404).json({ message: "Vehicle not found" });
+      return next(new ApiError(404, "Vehicle not found"));
     }
-    res.status(204).send();
+    res.status(204).send({ message: "Vehicle was deleted successfully" });
   } catch (error) {
     next(error);
   }

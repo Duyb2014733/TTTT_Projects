@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const vehicleSchema = new mongoose.Schema({
+  name_vehicle: String,
   type: String,
   seats: Number,
 });

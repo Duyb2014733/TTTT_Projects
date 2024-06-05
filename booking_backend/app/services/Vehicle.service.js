@@ -42,7 +42,7 @@ class VehicleService {
   // Xóa một xe dựa trên ID
   async deleteVehicle(vehicleId) {
     try {
-      await Vehicle.findByIdAndDelete(vehicleId);
+      return await Vehicle.findByIdAndDelete(vehicleId);
     } catch (error) {
       throw error;
     }
