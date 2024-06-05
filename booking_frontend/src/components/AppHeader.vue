@@ -1,81 +1,128 @@
 <template>
-    <a-layout style="min-height: 100vh">
-        <a-layout-sider :collapsed-width="0">
+    <div class="layout-wrapper">
+        <div class="layout-sidebar">
             <div class="logo" style="color: #fff; text-align: center; font-size: large;">ADMIN PANEL</div>
-            <a-menu v-model="selectedKeys" theme="dark" mode="inline">
-                <a-menu-item key="1">
-                    <router-link to="/nhaxes/list" class="nav-link">
-                        <DesktopOutlined />
-                        <span class="menu-text">Nhà Xe</span>
+            <ul class="layout-menu">
+                <li v-for="item in menuItems" :key="item.key" :class="{ active: isActive(item.to) }">
+                    <router-link :to="item.to" class="layout-menu-link">
+                        <i :class="item.icon"></i>
+                        <span> {{ item.label }}</span>
                     </router-link>
-                </a-menu-item>
-                <a-menu-item key="2">
-                    <router-link to="/chuyenxes/list" class="nav-link">
-                        <UserOutlined />
-                        <span class="menu-text">Chuyến Xe</span>
-                    </router-link>
-                </a-menu-item>
-                <a-menu-item key="3">
-                    <router-link to="/datchos/list" class="nav-link">
-                        <TeamOutlined />
-                        <span class="menu-text">Đặt Chổ</span>
-                    </router-link>
-                </a-menu-item>
-            </a-menu>
-        </a-layout-sider>
-        <a-layout>
-            <a-layout-header style="background: #fff; padding: 0" />
-            <a-layout-content style="margin: 0 16px">
-                <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
-                    <router-view />
-                </div>
-            </a-layout-content>
-            <a-layout-footer style="text-align: center">
-                Ant Design ©2018 Created by Ant UED
-            </a-layout-footer>
-        </a-layout>
-    </a-layout>
+                </li>
+            </ul>
+        </div>
+        <div class="layout-main">
+            <div class="layout-content">
+                <router-view />
+            </div>
+            <div class="layout-footer" style="text-align: center">
+                Lê Đức Duy
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
-import { DesktopOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons-vue';
 import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
-    components: {
-        DesktopOutlined,
-        UserOutlined,
-        TeamOutlined
-    },
     setup() {
+        const route = useRoute();
+        const router = useRouter();
+
         const selectedKeys = ref(['1']);
-        return { selectedKeys };
+
+        const menuItems = ref([
+            {
+                label: 'Quản lý Xe',
+                icon: 'fa-solid fa-car',
+                to: '/vehicle',
+                key: '1'
+            },
+            {
+                label: 'Đăng nhập',
+                icon: 'fa-solid fa-right-to-bracket',
+                to: '/login',
+                key: '2'
+            },
+            {
+                label: 'Đăng ký',
+                icon: 'fa-solid fa-user-plus',
+                to: '/register',
+                key: '3'
+            }
+        ]);
+
+        const isActive = (path) => {
+            return route.path === path;
+        };
+
+        return { selectedKeys, menuItems, isActive };
     }
 };
 </script>
 
 <style scoped>
-#components-layout-demo-side .logo {
-    height: 32px;
-    margin: 16px;
-    background: rgba(255, 255, 255, 0.3);
+.layout-wrapper {
+    display: flex;
+    height: 100vh;
 }
 
-.site-layout .site-layout-background {
-    background: #fff;
+.layout-sidebar {
+    flex: 0 0 250px;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
 }
 
-[data-theme='dark'] .site-layout .site-layout-background {
-    background: #141414;
+.layout-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
-.nav-link {
+.layout-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+.layout-footer {
+    padding: 10px;
+    background-color: #fff;
+    text-align: center;
+}
+
+.layout-menu {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.layout-menu li {
+    margin-bottom: 10px;
+}
+
+.layout-menu .layout-menu-link {
+    display: flex;
+    align-items: center;
+    color: #fff;
     text-decoration: none;
-    /* Loại bỏ gạch chân */
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
 }
 
-.menu-text {
-    margin-left: 10px;
-    /* Khoảng cách giữa biểu tượng và văn bản */
+.layout-menu .layout-menu-link:hover {
+    background-color: #444;
+}
+
+.layout-menu .layout-menu-link .pi {
+    margin-right: 10px;
+}
+
+.layout-menu .active .layout-menu-link {
+    background-color: #555;
 }
 </style>
