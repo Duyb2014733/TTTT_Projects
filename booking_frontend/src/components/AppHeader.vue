@@ -6,7 +6,7 @@
                 <li v-for="item in menuItems" :key="item.key" :class="{ active: isActive(item.to) }">
                     <router-link :to="item.to" class="layout-menu-link">
                         <i :class="item.icon"></i>
-                        <span> {{ item.label }}</span>
+                        <span class="ms-2"> {{ item.label }}</span>
                     </router-link>
                 </li>
             </ul>
@@ -23,42 +23,35 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-
 export default {
-    setup() {
-        const route = useRoute();
-        const router = useRouter();
-
-        const selectedKeys = ref(['1']);
-
-        const menuItems = ref([
-            {
-                label: 'Quản lý Xe',
-                icon: 'fa-solid fa-car',
-                to: '/vehicle',
-                key: '1'
-            },
-            {
-                label: 'Đăng nhập',
-                icon: 'fa-solid fa-right-to-bracket',
-                to: '/login',
-                key: '2'
-            },
-            {
-                label: 'Đăng ký',
-                icon: 'fa-solid fa-user-plus',
-                to: '/register',
-                key: '3'
-            }
-        ]);
-
-        const isActive = (path) => {
-            return route.path === path;
+    data() {
+        return {
+            menuItems: [
+                {
+                    label: 'Quản lý Xe',
+                    icon: 'fa-solid fa-car',
+                    to: '/vehicle',
+                    key: '1'
+                },
+                {
+                    label: 'Đăng nhập',
+                    icon: 'fa-solid fa-right-to-bracket',
+                    to: '/login',
+                    key: '2'
+                },
+                {
+                    label: 'Đăng ký',
+                    icon: 'fa-solid fa-user-plus',
+                    to: '/register',
+                    key: '3'
+                }
+            ]
         };
-
-        return { selectedKeys, menuItems, isActive };
+    },
+    methods: {
+        isActive(path) {
+            return this.$route.path === path;
+        }
     }
 };
 </script>
@@ -124,5 +117,9 @@ export default {
 
 .layout-menu .active .layout-menu-link {
     background-color: #555;
+}
+
+.ms-2 {
+    margin-left: 0.5rem;
 }
 </style>

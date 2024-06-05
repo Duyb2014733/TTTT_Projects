@@ -3,15 +3,17 @@
         <div class="header">
             <h1>Quản lý xe</h1>
             <a-button type="primary" @click="showAddModal">
-                <i class="fa-solid fa-plus"></i>Thêm Xe
+                <i class="fa-solid fa-plus"></i>
+                <span class="ms-2">Thêm Xe</span>
             </a-button>
         </div>
 
         <a-table :columns="columns" :data-source="vehicles" rowKey="key">
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
-                    <a-button @click="showEditModal(record)">Edit</a-button>
-                    <a-button @click="deleteRecord(record._id)" style="margin-left: 10px;">Delete</a-button>
+                    <a-button danger @click="showEditModal(record)">Edit</a-button>
+                    <a-button type="primary" danger @click="deleteRecord(record._id)"
+                        style="margin-left: 10px;">Delete</a-button>
                 </template>
                 <template v-else>
                     {{ record[column.dataIndex] }}
@@ -138,7 +140,7 @@ export default {
         },
         showNotification(type, message) {
             notification[type]({
-                message: 'Notification',
+                message: 'Thông báo',
                 description: message,
             });
         },
@@ -160,5 +162,9 @@ export default {
 h1 {
     font-size: 24px;
     font-weight: bold;
+}
+
+.ms-2 {
+    margin-left: 0.5rem;
 }
 </style>
