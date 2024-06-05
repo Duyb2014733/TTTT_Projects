@@ -52,7 +52,7 @@ class TicketService {
       if (!mongoose.Types.ObjectId.isValid(ticketId)) {
         throw new Error("Invalid ticket ID");
       }
-      await Ticket.findByIdAndDelete(ticketId);
+      return await Ticket.findByIdAndDelete(ticketId);
     } catch (error) {
       throw error;
     }
@@ -61,7 +61,7 @@ class TicketService {
   // Xóa tất cả các vé xe
   async deleteAllTickets() {
     try {
-      await Ticket.deleteMany({});
+      return await Ticket.deleteMany({});
     } catch (error) {
       throw error;
     }

@@ -51,7 +51,7 @@ class VehicleService {
   // Xóa tất cả các xe
   async deleteAllVehicles() {
     try {
-      await Vehicle.deleteMany({});
+      return await Vehicle.deleteMany({});
     } catch (error) {
       throw error;
     }
