@@ -11,9 +11,12 @@
         <a-table :columns="columns" :data-source="vehicles" rowKey="key">
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
-                    <a-button danger @click="showEditModal(record)">Edit</a-button>
-                    <a-button type="primary" danger @click="deleteRecord(record._id)"
-                        style="margin-left: 10px;">Delete</a-button>
+                    <a-button danger @click="showEditModal(record)">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a-button>
+                    <a-button type="primary" danger @click="deleteRecord(record._id)" style="margin-left: 10px;">
+                        <i class="fa-solid fa-trash"></i>
+                    </a-button>
                 </template>
                 <template v-else>
                     {{ record[column.dataIndex] }}
