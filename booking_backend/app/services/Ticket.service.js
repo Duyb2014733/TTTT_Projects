@@ -17,7 +17,7 @@ class TicketService {
       if (!mongoose.Types.ObjectId.isValid(ticketId)) {
         throw new Error("Invalid ticket ID");
       }
-      return await Ticket.findById(ticketId).populate("user_id");
+      return await Ticket.findById(ticketId);
     } catch (error) {
       throw error;
     }
@@ -26,7 +26,7 @@ class TicketService {
   // Lấy danh sách tất cả các vé xe
   async getAllTickets() {
     try {
-      return await Ticket.find().populate("user_id");
+      return await Ticket.find();
     } catch (error) {
       throw error;
     }
@@ -40,7 +40,7 @@ class TicketService {
       }
       return await Ticket.findByIdAndUpdate(ticketId, ticketData, {
         new: true,
-      }).populate("user_id");
+      });
     } catch (error) {
       throw error;
     }

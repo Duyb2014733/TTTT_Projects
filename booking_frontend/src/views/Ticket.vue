@@ -8,15 +8,15 @@
             </a-button>
         </div>
 
-        <a-table :columns="columns" :data-source="tickets" rowKey="key">
+        <a-table :columns="columns" :data-source="tickets" rowKey="_id">
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
-                    <a-button danger @click="showEditModal(record)">Edit</a-button>
-                    <a-button type="primary" danger @click="deleteRecord(record._id)"
-                        style="margin-left: 10px;">Delete</a-button>
-                </template>
-                <template v-else-if="column.key === 'user_id'">
-                    {{ record.user_id._id }}
+                    <a-button danger @click="showEditModal(record)">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a-button>
+                    <a-button type="primary" danger @click="deleteRecord(record._id)" style="margin-left: 10px;">
+                        <i class="fa-solid fa-trash"></i>
+                    </a-button>
                 </template>
                 <template v-else>
                     {{ record[column.dataIndex] }}
@@ -38,10 +38,6 @@
                     :rules="[{ required: true, message: 'Vui lòng nhập ngày giờ khởi hành!' }]">
                     <a-date-picker v-model:value="newTicket.departure_datetime" show-time placeholder="Chọn ngày giờ" />
                 </a-form-item>
-                <a-form-item name="user_id" label="ID Người Dùng"
-                    :rules="[{ required: true, message: 'Vui lòng nhập ID người dùng!' }]">
-                    <a-input v-model:value="newTicket.user_id" placeholder="ID Người Dùng" />
-                </a-form-item>
             </a-form>
         </a-modal>
 
@@ -57,12 +53,7 @@
                 </a-form-item>
                 <a-form-item name="departure_datetime" label="Ngày Giờ Khởi Hành"
                     :rules="[{ required: true, message: 'Vui lòng nhập ngày giờ khởi hành!' }]">
-                    <a-date-picker v-model:value="currentTicket.departure_datetime" show-time
-                        placeholder="Chọn ngày giờ" />
-                </a-form-item>
-                <a-form-item name="user_id" label="ID Người Dùng"
-                    :rules="[{ required: true, message: 'Vui lòng nhập ID người dùng!' }]">
-                    <a-input v-model:value="currentTicket.user_id" placeholder="ID Người Dùng" />
+                    <a-date-picker v-model="currentTicket.departure_datetime" show-time placeholder="Chọn ngày giờ" />
                 </a-form-item>
             </a-form>
         </a-modal>
@@ -72,6 +63,7 @@
 <script>
 import TicketService from "@/services/TicketService";
 import { notification } from 'ant-design-vue';
+import { format, parseISO } from 'date-fns';
 
 export default {
     data() {
@@ -80,14 +72,13 @@ export default {
                 { title: 'Số Vé', dataIndex: 'ticket_number', key: 'ticket_number' },
                 { title: 'Giá', dataIndex: 'price', key: 'price' },
                 { title: 'Ngày Giờ Khởi Hành', dataIndex: 'departure_datetime', key: 'departure_datetime' },
-                { title: 'ID Người Dùng', dataIndex: 'user_id', key: 'user_id' },
                 { title: 'Hành Động', key: 'action' },
             ],
             tickets: [],
             isAddModalVisible: false,
             isEditModalVisible: false,
-            newTicket: { ticket_number: '', price: '', departure_datetime: null, user_id: '' },
-            currentTicket: null,
+            newTicket: { ticket_number: '', price: '', departure_datetime: null },
+            currentTicket: { ticket_number: '', price: '', departure_datetime: null },
         };
     },
     methods: {
@@ -113,20 +104,24 @@ export default {
                 console.error('Error adding ticket:', error);
             }
         },
+
+
+
         handleAddCancel() {
             this.isAddModalVisible = false;
             this.resetNewTicket();
         },
         resetNewTicket() {
-            this.newTicket = { ticket_number: '', price: '', departure_datetime: null, user_id: '' };
+            this.newTicket = { ticket_number: '', price: '', departure_datetime: null };
         },
         showEditModal(ticket) {
-            this.currentTicket = { ...ticket };
+            this.currentTicket = { ...ticket, departure_datetime: parseISO(ticket.departure_datetime) };
             this.isEditModalVisible = true;
         },
         async editTicket() {
             try {
                 await this.$refs.editFormRef.validate();
+                this.currentTicket.departure_datetime = format(this.currentTicket.departure_datetime, "yyyy-MM-dd'T'HH:mm:ssxxx");
                 await TicketService.updateTicket(this.currentTicket._id, this.currentTicket);
                 await this.fetchTickets();
                 this.isEditModalVisible = false;

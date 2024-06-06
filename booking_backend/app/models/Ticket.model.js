@@ -13,11 +13,6 @@ const ticketSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
 });
 
 const Ticket = mongoose.model("Ticket", ticketSchema);
