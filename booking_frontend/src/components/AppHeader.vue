@@ -34,16 +34,22 @@ export default {
                     key: '1'
                 },
                 {
+                    label: 'Quản lý Vé',
+                    icon: 'fa-solid fa-ticket',
+                    to: '/ticket',
+                    key: '2'
+                },
+                {
                     label: 'Đăng nhập',
                     icon: 'fa-solid fa-right-to-bracket',
                     to: '/login',
-                    key: '2'
+                    key: '3'
                 },
                 {
                     label: 'Đăng ký',
                     icon: 'fa-solid fa-user-plus',
                     to: '/register',
-                    key: '3'
+                    key: '4'
                 }
             ]
         };
