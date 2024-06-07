@@ -34,22 +34,28 @@ export default {
                     key: '1'
                 },
                 {
+                    label: 'Quản lý tuyến đường',
+                    icon: 'fa-solid fa-route',
+                    to: '/route',
+                    key: '2'
+                },
+                {
                     label: 'Quản lý Vé',
                     icon: 'fa-solid fa-ticket',
                     to: '/ticket',
-                    key: '2'
+                    key: '3'
                 },
                 {
                     label: 'Đăng nhập',
                     icon: 'fa-solid fa-right-to-bracket',
                     to: '/login',
-                    key: '3'
+                    key: '4'
                 },
                 {
                     label: 'Đăng ký',
                     icon: 'fa-solid fa-user-plus',
                     to: '/register',
-                    key: '4'
+                    key: '5'
                 }
             ]
         };
