@@ -1,7 +1,7 @@
 const TuyenDuong = require("../models/TuyenDuong.model");
 const mongoose = require("mongoose");
 
-class RouteService {
+class TuyenDuongService {
   // Tạo một tuyến đường mới
   async createRoute(routeData) {
     try {
@@ -68,4 +68,4 @@ class RouteService {
   }
 }
 
-module.exports = new RouteService();
+module.exports = TuyenDuongService;
