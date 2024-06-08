@@ -1,37 +1,37 @@
-const User = require("../models/User.model");
+const KhachHang = require("../models/KhachHang.model");
 
-class UserService {
+class KhachHangService {
   // Tạo mới một người dùng
-  async createUser(userData) {
+  async createKhachHang(KhachHangData) {
     try {
-      return await User.create(userData);
+      return await KhachHang.create(KhachHangData);
     } catch (error) {
       throw error;
     }
   }
 
   // Lấy thông tin của một người dùng dựa trên ID
-  async getUserById(userId) {
+  async getKhachHangById(KhachHangId) {
     try {
-      return await User.findById(userId).populate("bookings");
+      return await KhachHang.findById(KhachHangId);
     } catch (error) {
       throw error;
     }
   }
 
   // Lấy danh sách tất cả người dùng
-  async getAllUsers() {
+  async getAllKhachHangs() {
     try {
-      return await User.find().populate("bookings");
+      return await KhachHang.find();
     } catch (error) {
       throw error;
     }
   }
 
   // Cập nhật thông tin của một người dùng
-  async updateUser(userId, userData) {
+  async updateKhachHang(KhachHangId, KhachHangData) {
     try {
-      return await User.findByIdAndUpdate(userId, userData, {
+      return await KhachHang.findByIdAndUpdate(KhachHangId, KhachHangData, {
         new: true,
       }).populate("bookings");
     } catch (error) {
@@ -40,22 +40,22 @@ class UserService {
   }
 
   // Xóa một người dùng dựa trên ID
-  async deleteUser(userId) {
+  async deleteKhachHang(KhachHangId) {
     try {
-      return await User.findByIdAndDelete(userId);
+      return await KhachHang.findByIdAndDelete(KhachHangId);
     } catch (error) {
       throw error;
     }
   }
 
   // Xóa tất cả người dùng
-  async deleteAllUsers() {
+  async deleteAllKhachHangs() {
     try {
-      return await User.deleteMany({});
+      return await KhachHang.deleteMany({});
     } catch (error) {
       throw error;
     }
   }
 }
 
-module.exports = UserService;
+module.exports = KhachHangService;

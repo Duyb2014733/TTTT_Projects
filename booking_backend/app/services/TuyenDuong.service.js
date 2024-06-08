@@ -1,10 +1,11 @@
-const Route = require("../models/Route.model");
+const TuyenDuong = require("../models/TuyenDuong.model");
+const mongoose = require("mongoose");
 
 class RouteService {
   // Tạo một tuyến đường mới
   async createRoute(routeData) {
     try {
-      return await Route.create(routeData);
+      return await TuyenDuong.create(routeData);
     } catch (error) {
       throw error;
     }
@@ -13,7 +14,10 @@ class RouteService {
   // Lấy thông tin của một tuyến đường dựa trên ID
   async getRouteById(routeId) {
     try {
-      return await Route.findById(routeId);
+      if (!mongoose.Types.ObjectId.isValid(routeId)) {
+        throw new Error("Invalid Route ID");
+      }
+      return await TuyenDuong.findById(routeId);
     } catch (error) {
       throw error;
     }
@@ -22,7 +26,7 @@ class RouteService {
   // Lấy danh sách tất cả các tuyến đường
   async getAllRoutes() {
     try {
-      return await Route.find();
+      return await TuyenDuong.find();
     } catch (error) {
       throw error;
     }
@@ -31,7 +35,10 @@ class RouteService {
   // Cập nhật thông tin của một tuyến đường
   async updateRoute(routeId, routeData) {
     try {
-      return await Route.findByIdAndUpdate(routeId, routeData, {
+      if (!mongoose.Types.ObjectId.isValid(routeId)) {
+        throw new Error("Invalid Route ID");
+      }
+      return await TuyenDuong.findByIdAndUpdate(routeId, routeData, {
         new: true,
       });
     } catch (error) {
@@ -42,7 +49,10 @@ class RouteService {
   // Xóa một tuyến đường dựa trên ID
   async deleteRoute(routeId) {
     try {
-      return await Route.findByIdAndDelete(routeId);
+      if (!mongoose.Types.ObjectId.isValid(routeId)) {
+        throw new Error("Invalid Route ID");
+      }
+      return await TuyenDuong.findByIdAndDelete(routeId);
     } catch (error) {
       throw error;
     }
@@ -51,11 +61,11 @@ class RouteService {
   // Xóa tất cả các tuyến đường
   async deleteAllRoutes() {
     try {
-      return await Route.deleteMany({});
+      return await TuyenDuong.deleteMany({});
     } catch (error) {
       throw error;
     }
   }
 }
 
-module.exports = RouteService;
+module.exports = new RouteService();
