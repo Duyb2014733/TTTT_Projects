@@ -40,22 +40,28 @@ export default {
                     key: '2'
                 },
                 {
+                    label: 'Quản lý trạm xe',
+                    icon: 'fa-solid fa-bus',
+                    to: '/busstation',
+                    key: '3'
+                },
+                {
                     label: 'Quản lý Vé',
                     icon: 'fa-solid fa-ticket',
                     to: '/ticket',
-                    key: '3'
+                    key: '4'
                 },
                 {
                     label: 'Đăng nhập',
                     icon: 'fa-solid fa-right-to-bracket',
                     to: '/login',
-                    key: '4'
+                    key: '5'
                 },
                 {
                     label: 'Đăng ký',
                     icon: 'fa-solid fa-user-plus',
                     to: '/register',
-                    key: '5'
+                    key: '6'
                 }
             ]
         };
