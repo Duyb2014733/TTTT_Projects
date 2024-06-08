@@ -1,7 +1,7 @@
 const { Timestamp } = require("mongodb");
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema(
+const KhachHangSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -30,7 +30,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
-    bookings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
     admin: {
       type: Boolean,
       default: false,
@@ -39,6 +38,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const KhachHang = mongoose.model("KhachHang", KhachHangSchema);
 
-module.exports = User;
+module.exports = KhachHang;
