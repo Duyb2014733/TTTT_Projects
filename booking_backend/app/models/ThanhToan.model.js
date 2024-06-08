@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-const ThanhToanSchema = new Schema({
+const ThanhToanSchema = new mongoose.Schema({
   customer_id: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "KhachHang",
     required: true,
   },

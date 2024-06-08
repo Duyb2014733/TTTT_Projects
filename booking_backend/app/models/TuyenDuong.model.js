@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const TuyenDuongSchema = new Schema({
+const TuyenDuongSchema = new mongoose.Schema({
   departure_city: { type: String, required: true },
   arrival_city: { type: String, required: true },
   distance: { type: Number, required: true },
