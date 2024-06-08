@@ -1,14 +1,14 @@
 const TuyenDuongService = require("../services/TuyenDuong.service");
 const ApiError = require("../api-error");
 
-const TuyenDuongService = new TuyenDuongService();
+const tuyenDuongService = new TuyenDuongService();
 
 // Tạo một tuyến đường mới
 exports.createTuyenDuong = async (req, res, next) => {
   try {
     const tuyenDuongData = req.body;
     const newTuyenDuong =
-      await TuyenDuongService.createTuyenDuong(tuyenDuongData);
+      await tuyenDuongService.createTuyenDuong(tuyenDuongData);
     res.status(201).json(newTuyenDuong);
   } catch (error) {
     next(error);
@@ -19,7 +19,7 @@ exports.createTuyenDuong = async (req, res, next) => {
 exports.getTuyenDuongById = async (req, res, next) => {
   try {
     const tuyenDuongId = req.params.id;
-    const TuyenDuong = await TuyenDuongService.getTuyenDuongById(tuyenDuongId);
+    const TuyenDuong = await tuyenDuongService.getTuyenDuongById(tuyenDuongId);
     if (!TuyenDuong) {
       throw new ApiError(404, "TuyenDuong not found");
     }
@@ -32,7 +32,7 @@ exports.getTuyenDuongById = async (req, res, next) => {
 // Lấy danh sách tất cả các tuyến đường
 exports.getAllTuyenDuongs = async (req, res, next) => {
   try {
-    const TuyenDuongs = await TuyenDuongService.getAllTuyenDuongs();
+    const TuyenDuongs = await tuyenDuongService.getAllTuyenDuongs();
     res.status(200).json(TuyenDuongs);
   } catch (error) {
     next(error);
@@ -44,7 +44,7 @@ exports.updateTuyenDuong = async (req, res, next) => {
   try {
     const tuyenDuongId = req.params.id;
     const tuyenDuongData = req.body;
-    const updatedTuyenDuong = await TuyenDuongService.updateTuyenDuong(
+    const updatedTuyenDuong = await tuyenDuongService.updateTuyenDuong(
       tuyenDuongId,
       tuyenDuongData
     );
@@ -62,7 +62,7 @@ exports.deleteTuyenDuong = async (req, res, next) => {
   try {
     const tuyenDuongId = req.params.id;
     const deletedTuyenDuong =
-      await TuyenDuongService.deleteTuyenDuong(tuyenDuongId);
+      await tuyenDuongService.deleteTuyenDuong(tuyenDuongId);
     if (!deletedTuyenDuong) {
       throw new ApiError(404, "TuyenDuong not found");
     }
@@ -75,7 +75,7 @@ exports.deleteTuyenDuong = async (req, res, next) => {
 // Xóa tất cả các tuyến đường
 exports.deleteAllTuyenDuongs = async (req, res, next) => {
   try {
-    await TuyenDuongService.deleteAllTuyenDuongs();
+    await tuyenDuongService.deleteAllTuyenDuongs();
     res.status(204).send();
   } catch (error) {
     next(error);
