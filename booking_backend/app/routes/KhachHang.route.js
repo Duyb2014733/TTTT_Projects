@@ -14,4 +14,5 @@ router
   .put(khachHangController.updateKhachHang)
   .delete(khachHangController.deleteKhachHang);
 
+router.route("/login").post(khachHangController.loginKhachHang);
 module.exports = router;
