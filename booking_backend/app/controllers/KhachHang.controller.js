@@ -1,4 +1,5 @@
 const KhachHangService = require("../services/KhachHang.service");
+const KhachHang = require("../models/KhachHang.model");
 const ApiError = require("../api-error");
 const bcrypt = require("bcrypt");
 
@@ -22,6 +23,31 @@ exports.registerKhachHang = async (req, res, next) => {
 
     // Trả về thông tin của người dùng mới đã tạo
     res.status(201).json(newKhachHang);
+  } catch (error) {
+    // Nếu có lỗi xảy ra, chuyển đến middleware xử lý lỗi tiếp theo
+    next(error);
+  }
+};
+
+exports.loginKhachHang = async (req, res, next) => {
+  try {
+    // Tìm người dùng theo email
+    const khachhang = await KhachHang.findOne({ email: req.body.email });
+    if (!khachhang) {
+      return res.status(404).json("Invalid email or password.");
+    }
+
+    // So sánh password từ request với password đã hash trong cơ sở dữ liệu
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      khachhang.password
+    );
+    if (!validPassword) {
+      return res.status(404).json("Invalid email or password.");
+    }
+
+    // Nếu email và password đúng, trả về thông tin người dùng
+    return res.status(200).json(khachhang);
   } catch (error) {
     // Nếu có lỗi xảy ra, chuyển đến middleware xử lý lỗi tiếp theo
     next(error);
