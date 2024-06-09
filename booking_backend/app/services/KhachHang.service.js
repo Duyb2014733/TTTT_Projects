@@ -33,7 +33,7 @@ class KhachHangService {
     try {
       return await KhachHang.findByIdAndUpdate(KhachHangId, KhachHangData, {
         new: true,
-      }).populate("bookings");
+      });
     } catch (error) {
       throw error;
     }
