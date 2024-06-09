@@ -1,12 +1,15 @@
 import createApiClient from "./api.service";
 
 class KhachHangService {
-  constructor(baseUrl = "/api/KhachHang") {
+  constructor(baseUrl = "/api/khachhang") {
     this.api = createApiClient(baseUrl);
   }
 
   async registerKhachHang(khachHangData) {
     return (await this.api.post("/", khachHangData)).data;
+  }
+  async loginKhachHang(khachHangData) {
+    return (await this.api.post("/login", khachHangData)).data;
   }
 
   async getKhachHangById(khachHangId) {

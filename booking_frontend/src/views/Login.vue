@@ -12,68 +12,51 @@
                         <input v-model="loginData.password" type="password" placeholder="Enter password"
                             class="form-control" required>
                     </div>
-                    <button type="submit" class="submit">
-                        Sign in
-                    </button>
-
+                    <button type="submit" class="submit">Sign in</button>
                     <p class="signup-link">
-                        No account?
-                        <router-link :to="{ name: 'Register' }">Sign up</router-link>
+                        No account? <router-link :to="{ name: 'Register' }">Sign up</router-link>
                     </p>
                 </form>
-                <Notification v-if="errorMessage" :message="errorMessage" type="error" />
-                <Notification v-if="successMessage" :message="successMessage" type="success" />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import Notification from "@/components/Notification.vue";
-import UserService from "@/services/UserService";
+import KhachHangService from "@/services/KhachHangService";
+import { notification } from 'ant-design-vue';
 
 export default {
-    components: {
-        Notification
-    },
     data() {
         return {
             loginData: {
                 email: '',
                 password: ''
-            },
-            errorMessage: '',
-            successMessage: ''
+            }
         };
     },
     methods: {
         async submitForm() {
             try {
-                const user = await this.loginUser(this.loginData);
-                // localStorage.setItem('role', user.vai_tro);
-                this.successMessage = 'Login successful!';
+                const khachHang = await KhachHangService.loginKhachHang(this.loginData);
+                this.showNotification('success', 'Login successful!');
                 setTimeout(() => {
-                    this.successMessage = '';
                     this.$router.push({ name: 'admin' });
                 }, 2000);
             } catch (error) {
-                this.errorMessage = error.message;
-                setTimeout(() => {
-                    this.errorMessage = '';
-                }, 2000);
+                this.showNotification('error', error.message || 'Login failed');
             }
         },
-        async loginUser(loginData) {
-            const users = await UserService.getAllUsers();
-            const loggedInUser = users.find(user => user.email === loginData.email && user.password === loginData.password);
-            if (!loggedInUser) {
-                throw new Error("Email or password is incorrect.");
-            }
-            return loggedInUser;
+        showNotification(type, message) {
+            notification[type]({
+                message: 'Thông báo',
+                description: message,
+            });
         }
     }
 }
 </script>
+
 
 <style scoped>
 .form {
@@ -110,7 +93,7 @@ export default {
     padding-right: 3rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    width: 300px;
+    width: 100%;
     border-radius: 0.5rem;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }

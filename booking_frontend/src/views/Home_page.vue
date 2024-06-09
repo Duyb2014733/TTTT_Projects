@@ -7,7 +7,7 @@
                 <Card>
                     <template #content>
                         <div class="card-details">
-                            <p class="text-title">{{ totalUsers }}</p>
+                            <p class="text-title">{{ totalKhachHangs }}</p>
                             <p class="text-body">Số lượng khách hàng</p>
                         </div>
                     </template>
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import UserService from "@/services/UserService";
+import KhachHangService from "@/services/KhachHangService";
 import Card from 'primevue/card';
 
 export default {
@@ -47,13 +47,13 @@ export default {
     },
     data() {
         return {
-            totalUsers: 0
+            totalKhachHangs: 0
         };
     },
     async mounted() {
         try {
-            const users = await UserService.getAllUsers();
-            this.totalUsers = users.length;
+            const users = await KhachHangService.getAllKhachHangs();
+            this.totalKhachHangs = users.length;
         } catch (error) {
             console.error("Error fetching total users:", error);
         }

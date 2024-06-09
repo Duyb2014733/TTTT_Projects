@@ -40,9 +40,9 @@ export default {
                     key: '2'
                 },
                 {
-                    label: 'Quản lý trạm xe',
+                    label: 'Quản lý Nhà Xe',
                     icon: 'fa-solid fa-bus',
-                    to: '/busstation',
+                    to: '/nhaxe',
                     key: '3'
                 },
                 {

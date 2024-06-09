@@ -42,7 +42,7 @@
 
 <script>
 import Notification from "@/components/Notification.vue";
-import UserService from "@/services/UserService";
+import KhachHangService from "@/services/KhachHangService";
 
 export default {
     components: {
@@ -64,7 +64,7 @@ export default {
     methods: {
         async register() {
             try {
-                await UserService.registerUser(this.registerData);
+                await KhachHangService.registerKhachHang(this.registerData);
                 this.successMessage = 'Account created successfully!';
                 setTimeout(() => {
                     this.successMessage = '';
