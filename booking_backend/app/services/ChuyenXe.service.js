@@ -23,7 +23,7 @@ class ChuyenXeService {
   }
 
   // Lấy danh sách tất cả các chuyến xe
-  async getAllChuyenXe() {
+  async getAllChuyenXes() {
     try {
       return await ChuyenXe.find().populate("bus_id").populate("route_id");
     } catch (error) {

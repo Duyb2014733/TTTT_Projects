@@ -3,28 +3,28 @@ const mongoose = require("mongoose");
 
 class TuyenDuongService {
   // Tạo một tuyến đường mới
-  async createRoute(routeData) {
+  async createTuyenDuong(tuyenDuongData) {
     try {
-      return await TuyenDuong.create(routeData);
+      return await TuyenDuong.create(tuyenDuongData);
     } catch (error) {
       throw error;
     }
   }
 
   // Lấy thông tin của một tuyến đường dựa trên ID
-  async getRouteById(routeId) {
+  async getTuyenDuongById(tuyenDuongId) {
     try {
-      if (!mongoose.Types.ObjectId.isValid(routeId)) {
-        throw new Error("Invalid Route ID");
+      if (!mongoose.Types.ObjectId.isValid(tuyenDuongId)) {
+        throw new Error("Invalid TuyenDuong ID");
       }
-      return await TuyenDuong.findById(routeId);
+      return await TuyenDuong.findById(tuyenDuongId);
     } catch (error) {
       throw error;
     }
   }
 
   // Lấy danh sách tất cả các tuyến đường
-  async getAllRoutes() {
+  async getAllTuyenDuongs() {
     try {
       return await TuyenDuong.find();
     } catch (error) {
@@ -33,12 +33,12 @@ class TuyenDuongService {
   }
 
   // Cập nhật thông tin của một tuyến đường
-  async updateRoute(routeId, routeData) {
+  async updateTuyenDuong(tuyenDuongId, tuyenDuongData) {
     try {
-      if (!mongoose.Types.ObjectId.isValid(routeId)) {
-        throw new Error("Invalid Route ID");
+      if (!mongoose.Types.ObjectId.isValid(tuyenDuongId)) {
+        throw new Error("Invalid TuyenDuong ID");
       }
-      return await TuyenDuong.findByIdAndUpdate(routeId, routeData, {
+      return await TuyenDuong.findByIdAndUpdate(tuyenDuongId, tuyenDuongData, {
         new: true,
       });
     } catch (error) {
@@ -47,19 +47,19 @@ class TuyenDuongService {
   }
 
   // Xóa một tuyến đường dựa trên ID
-  async deleteRoute(routeId) {
+  async deleteTuyenDuong(tuyenDuongId) {
     try {
-      if (!mongoose.Types.ObjectId.isValid(routeId)) {
-        throw new Error("Invalid Route ID");
+      if (!mongoose.Types.ObjectId.isValid(tuyenDuongId)) {
+        throw new Error("Invalid TuyenDuong ID");
       }
-      return await TuyenDuong.findByIdAndDelete(routeId);
+      return await TuyenDuong.findByIdAndDelete(tuyenDuongId);
     } catch (error) {
       throw error;
     }
   }
 
   // Xóa tất cả các tuyến đường
-  async deleteAllRoutes() {
+  async deleteAllTuyenDuongs() {
     try {
       return await TuyenDuong.deleteMany({});
     } catch (error) {

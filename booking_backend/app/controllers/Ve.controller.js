@@ -6,7 +6,7 @@ const veService = new VeService();
 exports.createVe = async (req, res, next) => {
   try {
     const veData = req.body;
-    const newVe = await VeService.createVe(veData);
+    const newVe = await veService.createVe(veData);
     res.status(201).json(newVe);
   } catch (error) {
     next(error);
@@ -16,7 +16,7 @@ exports.createVe = async (req, res, next) => {
 exports.getVeById = async (req, res, next) => {
   try {
     const veId = req.params.id;
-    const Ve = await VeService.getVeById(veId);
+    const Ve = await veService.getVeById(veId);
     if (!Ve) {
       return next(new ApiError(404, "Ve not found"));
     }
@@ -28,7 +28,7 @@ exports.getVeById = async (req, res, next) => {
 
 exports.getAllVes = async (req, res, next) => {
   try {
-    const Ves = await VeService.getAllVes();
+    const Ves = await veService.getAllVes();
     res.status(200).json(Ves);
   } catch (error) {
     next(error);
@@ -39,7 +39,7 @@ exports.updateVe = async (req, res, next) => {
   try {
     const veId = req.params.id;
     const veData = req.body;
-    const updatedVe = await VeService.updateVe(veId, veData);
+    const updatedVe = await veService.updateVe(veId, veData);
     if (!updatedVe) {
       return next(new ApiError(404, "Ve not found"));
     }
@@ -52,7 +52,7 @@ exports.updateVe = async (req, res, next) => {
 exports.deleteVe = async (req, res, next) => {
   try {
     const veId = req.params.id;
-    const deletedVe = await VeService.deleteVe(veId);
+    const deletedVe = await veService.deleteVe(veId);
     if (!deletedVe) {
       return next(new ApiError(404, "Ve not found"));
     }
@@ -64,7 +64,7 @@ exports.deleteVe = async (req, res, next) => {
 
 exports.deleteAllVes = async (req, res, next) => {
   try {
-    await VeService.deleteAllVes();
+    await veService.deleteAllVes();
     res.status(204).send();
   } catch (error) {
     next(error);

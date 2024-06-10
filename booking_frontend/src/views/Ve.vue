@@ -8,7 +8,7 @@
             </a-button>
         </div>
 
-        <a-table :columns="columns" :data-source="Ves" rowKey="_id">
+        <a-table :columns="columns" :data-source="ves" rowKey="_id">
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
                     <a-button @click="showEditModal(record)">
@@ -29,11 +29,19 @@
             <a-form ref="addFormRef" :model="newVe" layout="vertical" name="add_form">
                 <a-form-item name="customer_id" label="ID Khách Hàng"
                     :rules="[{ required: true, message: 'Vui lòng nhập ID khách hàng!' }]">
-                    <a-input v-model:value="newVe.customer_id" placeholder="ID Khách Hàng" />
+                    <a-select v-model:value="newVe.customer_id" placeholder="Chọn ID Khách Hàng">
+                        <a-select-option v-for="khachHang in khachHangs" :key="khachHang._id" :value="khachHang._id">
+                            {{ khachHang.name }}
+                        </a-select-option>
+                    </a-select>
                 </a-form-item>
                 <a-form-item name="trip_id" label="ID Chuyến Xe"
                     :rules="[{ required: true, message: 'Vui lòng nhập ID chuyến xe!' }]">
-                    <a-input v-model:value="newVe.trip_id" placeholder="ID Chuyến Xe" />
+                    <a-select v-model:value="newVe.trip_id" placeholder="Chọn ID Chuyến Xe">
+                        <a-select-option v-for="chuyenXe in chuyenXes" :key="chuyenXe._id" :value="chuyenXe._id">
+                            {{ chuyenXe.name }}
+                        </a-select-option>
+                    </a-select>
                 </a-form-item>
                 <a-form-item name="seat_number" label="Số Ghế"
                     :rules="[{ required: true, message: 'Vui lòng nhập số ghế!' }]">
@@ -58,11 +66,19 @@
             <a-form ref="editFormRef" :model="currentVe" layout="vertical" name="edit_form">
                 <a-form-item name="customer_id" label="ID Khách Hàng"
                     :rules="[{ required: true, message: 'Vui lòng nhập ID khách hàng!' }]">
-                    <a-input v-model:value="currentVe.customer_id" placeholder="ID Khách Hàng" />
+                    <a-select v-model:value="currentVe.customer_id" placeholder="Chọn ID Khách Hàng">
+                        <a-select-option v-for="khachHang in khachHangs" :key="khachHang._id" :value="khachHang._id">
+                            {{ khachHang.name }}
+                        </a-select-option>
+                    </a-select>
                 </a-form-item>
                 <a-form-item name="trip_id" label="ID Chuyến Xe"
                     :rules="[{ required: true, message: 'Vui lòng nhập ID chuyến xe!' }]">
-                    <a-input v-model:value="currentVe.trip_id" placeholder="ID Chuyến Xe" />
+                    <a-select v-model:value="currentVe.trip_id" placeholder="Chọn ID Chuyến Xe">
+                        <a-select-option v-for="chuyenXe in chuyenXes" :key="chuyenXe._id" :value="chuyenXe._id">
+                            {{ chuyenXe.name }}
+                        </a-select-option>
+                    </a-select>
                 </a-form-item>
                 <a-form-item name="seat_number" label="Số Ghế"
                     :rules="[{ required: true, message: 'Vui lòng nhập số ghế!' }]">
@@ -85,6 +101,8 @@
 </template>
 
 <script>
+import ChuyenXeService from "@/services/ChuyenXeService";
+import KhachHangService from "@/services/KhachHangService";
 import VeService from "@/services/VeService";
 import { notification } from 'ant-design-vue';
 import { format, parseISO } from 'date-fns';
@@ -101,7 +119,9 @@ export default {
                 { title: 'ID Thanh Toán', dataIndex: 'payment_id', key: 'payment_id' },
                 { title: 'Hành Động', key: 'action' },
             ],
-            Ves: [],
+            ves: [],
+            khachHangs: [],
+            chuyenXes: [],
             isAddModalVisible: false,
             isEditModalVisible: false,
             newVe: { customer_id: '', trip_id: '', seat_number: '', purchase_date: null, price: '', payment_id: '' },
@@ -111,9 +131,23 @@ export default {
     methods: {
         async fetchVes() {
             try {
-                this.Ves = await VeService.getAllVes();
+                this.ves = await VeService.getAllVes();
             } catch (error) {
                 console.error('Error fetching Ves:', error);
+            }
+        },
+        async fetchKhachHangs() {
+            try {
+                this.khachHangs = await KhachHangService.getAllKhachHangs();
+            } catch (error) {
+                console.error('Error fetching customers:', error);
+            }
+        },
+        async fetchChuyenXes() {
+            try {
+                this.chuyenXes = await ChuyenXeService.getAllChuyenXes();
+            } catch (error) {
+                console.error('Error fetching trips:', error);
             }
         },
         showAddModal() {
@@ -138,8 +172,8 @@ export default {
         resetNewVe() {
             this.newVe = { customer_id: '', trip_id: '', seat_number: '', purchase_date: null, price: '', payment_id: '' };
         },
-        showEditModal(Ve) {
-            this.currentVe = { ...Ve, purchase_date: parseISO(Ve.purchase_date) };
+        showEditModal(ve) {
+            this.currentVe = { ...ve, purchase_date: parseISO(ve.purchase_date) };
             this.isEditModalVisible = true;
         },
         async editVe() {
@@ -157,10 +191,10 @@ export default {
         handleEditCancel() {
             this.isEditModalVisible = false;
         },
-        async deleteRecord(VeId) {
+        async deleteRecord(veId) {
             if (confirm('Bạn có chắc muốn xóa vé này không?')) {
                 try {
-                    await VeService.deleteVe(VeId);
+                    await VeService.deleteVe(veId);
                     await this.fetchVes();
                     this.showNotification('success', 'Ve deleted successfully');
                 } catch (error) {
@@ -175,8 +209,10 @@ export default {
             });
         },
     },
-    mounted() {
-        this.fetchVes();
+    async mounted() {
+        await this.fetchVes();
+        await this.fetchKhachHangs();
+        await this.fetchChuyenXes();
     },
 };
 </script>

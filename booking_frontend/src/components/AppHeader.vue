@@ -36,7 +36,7 @@ export default {
                 {
                     label: 'Quản lý tuyến đường',
                     icon: 'fa-solid fa-route',
-                    to: '/route',
+                    to: '/tuyenduong',
                     key: '2'
                 },
                 {
