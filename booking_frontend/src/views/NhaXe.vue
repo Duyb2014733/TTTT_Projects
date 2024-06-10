@@ -11,7 +11,7 @@
         <a-table :columns="columns" :data-source="NhaXes" rowKey="_id">
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
-                    <a-button @click="showEditModal(record)">
+                    <a-button danger @click="showEditModal(record)">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </a-button>
                     <a-button type="primary" danger @click="deleteRecord(record._id)" style="margin-left: 10px;">
