@@ -16,9 +16,9 @@ const routes = [
     component: () => import("@/views/Vehicle.vue"),
   },
   {
-    path: "/ticket",
-    name: "Ticket",
-    component: () => import("@/views/Ticket.vue"),
+    path: "/ve",
+    name: "Ve",
+    component: () => import("@/views/Ve.vue"),
   },
   {
     path: "/route",

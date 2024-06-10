@@ -48,7 +48,7 @@ export default {
                 {
                     label: 'Quản lý Vé',
                     icon: 'fa-solid fa-ticket',
-                    to: '/ticket',
+                    to: '/ve',
                     key: '4'
                 },
                 {
