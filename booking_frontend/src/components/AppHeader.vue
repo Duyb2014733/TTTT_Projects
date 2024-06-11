@@ -28,9 +28,9 @@ export default {
         return {
             menuItems: [
                 {
-                    label: 'Quản lý Xe',
-                    icon: 'fa-solid fa-car',
-                    to: '/vehicle',
+                    label: 'Quản lý Khách Hàng',
+                    icon: 'fa-regular fa-user',
+                    to: '/khachhang',
                     key: '1'
                 },
                 {
