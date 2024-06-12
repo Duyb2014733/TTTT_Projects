@@ -5,8 +5,8 @@ class ThanhToanService {
   // Tạo một thanh toán mới
   async createThanhToan(ThanhToanData) {
     try {
-      const ThanhToan = new ThanhToan(ThanhToanData);
-      return await ThanhToan.save();
+      const thanhToan = new ThanhToan(ThanhToanData);
+      return await thanhToan.save();
     } catch (error) {
       throw error;
     }
@@ -69,4 +69,4 @@ class ThanhToanService {
   }
 }
 
-module.exports = new ThanhToanService();
+module.exports = ThanhToanService;
