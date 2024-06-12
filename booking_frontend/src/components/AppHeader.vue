@@ -52,16 +52,22 @@ export default {
                     key: '4'
                 },
                 {
+                    label: 'Quản lý chuyến xe',
+                    icon: 'fa-solid fa-van-shuttle',
+                    to: '/chuyenxe',
+                    key: '5'
+                },
+                {
                     label: 'Đăng nhập',
                     icon: 'fa-solid fa-right-to-bracket',
                     to: '/login',
-                    key: '5'
+                    key: '7'
                 },
                 {
                     label: 'Đăng ký',
                     icon: 'fa-solid fa-user-plus',
                     to: '/register',
-                    key: '6'
+                    key: '8'
                 }
             ]
         };
