@@ -58,6 +58,12 @@ export default {
                     key: '5'
                 },
                 {
+                    label: 'Quản lý thanh toán',
+                    icon: 'fa-solid fa-credit-card',
+                    to: '/thanhtoan',
+                    key: '5'
+                },
+                {
                     label: 'Đăng nhập',
                     icon: 'fa-solid fa-right-to-bracket',
                     to: '/login',
