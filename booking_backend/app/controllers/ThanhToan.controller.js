@@ -1,10 +1,12 @@
 const ThanhToanService = require("../services/ThanhToan.service");
 const ApiError = require("../api-error");
 
+const thanhToanService = new ThanhToanService();
+
 exports.createThanhToan = async (req, res, next) => {
   try {
     const thanhToanData = req.body;
-    const newThanhToan = await ThanhToanService.createThanhToan(thanhToanData);
+    const newThanhToan = await thanhToanService.createThanhToan(thanhToanData);
     res.status(201).json(newThanhToan);
   } catch (error) {
     next(new ApiError(500, error.message));
@@ -14,7 +16,7 @@ exports.createThanhToan = async (req, res, next) => {
 exports.getThanhToanById = async (req, res, next) => {
   try {
     const thanhToanId = req.params.id;
-    const ThanhToan = await ThanhToanService.getThanhToanById(thanhToanId);
+    const ThanhToan = await thanhToanService.getThanhToanById(thanhToanId);
     if (!ThanhToan) {
       return next(new ApiError(404, "ThanhToan not found"));
     }
@@ -26,7 +28,7 @@ exports.getThanhToanById = async (req, res, next) => {
 
 exports.getAllThanhToans = async (req, res, next) => {
   try {
-    const ThanhToans = await ThanhToanService.getAllThanhToans();
+    const ThanhToans = await thanhToanService.getAllThanhToans();
     res.status(200).json(ThanhToans);
   } catch (error) {
     next(new ApiError(500, error.message));
@@ -37,7 +39,7 @@ exports.updateThanhToan = async (req, res, next) => {
   try {
     const thanhToanId = req.params.id;
     const thanhToanData = req.body;
-    const updatedThanhToan = await ThanhToanService.updateThanhToan(
+    const updatedThanhToan = await thanhToanService.updateThanhToan(
       thanhToanId,
       thanhToanData
     );
@@ -54,7 +56,7 @@ exports.deleteThanhToan = async (req, res, next) => {
   try {
     const thanhToanId = req.params.id;
     const deletedThanhToan =
-      await ThanhToanService.deleteThanhToan(thanhToanId);
+      await thanhToanService.deleteThanhToan(thanhToanId);
     if (!deletedThanhToan) {
       return next(new ApiError(404, "ThanhToan not found"));
     }
@@ -66,7 +68,7 @@ exports.deleteThanhToan = async (req, res, next) => {
 
 exports.deleteAllThanhToans = async (req, res, next) => {
   try {
-    await ThanhToanService.deleteAllThanhToans();
+    await thanhToanService.deleteAllThanhToans();
     res.status(204).send();
   } catch (error) {
     next(new ApiError(500, error.message));
