@@ -110,14 +110,14 @@ export default {
             try {
                 this.ThanhToans = await ThanhToanService.getAllThanhToans();
             } catch (error) {
-                console.error('Error fetching chuyen xe:', error);
+                console.error('Lỗi tìm nạp chuyến xe:', error);
             }
         },
         async fetchKhachHangs() {
             try {
                 this.KhachHangs = await KhachHangService.getAllKhachHangs();
             } catch (error) {
-                console.error('Error fetching khach hang:', error);
+                console.error('Lỗi tìm nạp khách hàng:', error);
             }
         },
         showAddModal() {
@@ -133,9 +133,9 @@ export default {
                 await this.fetchThanhToans();
                 this.isAddModalVisible = false;
                 this.resetNewThanhToan();
-                this.showNotification('success', 'Thêm thông tin chuyến xe thành công!');
+                this.showNotification('success', 'Thêm thông tin thanh toán thành công!');
             } catch (error) {
-                console.error('Lỗi khi thêm chuyến xe:', error);
+                console.error('Lỗi khi thêm thanh toán:', error);
             }
         },
         handleAddCancel() {

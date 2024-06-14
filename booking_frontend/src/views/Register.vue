@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <form class="form" @submit.prevent="register">
-                    <p class="form-title">Create your account</p>
+                    <p class="form-title">Tạo tài khoản của bạn</p>
                     <div class="input-container form-group">
                         <input v-model="registerData.name" type="text" placeholder="Enter name" class="form-control"
                             required minlength="6" maxlength="20">
@@ -25,29 +25,24 @@
                             class="form-control" required minlength="6">
                     </div>
                     <button type="submit" class="submit">
-                        Sign up
+                        Đăng ký
                     </button>
 
                     <p class="signin-link">
-                        Already have an account?
-                        <router-link :to="{ name: 'Login' }">Sign in</router-link>
+                        Bạn đã có tài khoản?
+                        <router-link :to="{ name: 'Login' }">Đăng nhập</router-link>
                     </p>
                 </form>
-                <Notification v-if="errorMessage" :message="errorMessage" />
-                <Notification v-if="successMessage" :message="successMessage" />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import Notification from "@/components/Notification.vue";
 import KhachHangService from "@/services/KhachHangService";
+import { notification } from 'ant-design-vue';
 
 export default {
-    components: {
-        Notification
-    },
     data() {
         return {
             registerData: {
@@ -57,25 +52,23 @@ export default {
                 address: '',
                 password: ''
             },
-            errorMessage: '',
-            successMessage: ''
         };
     },
     methods: {
         async register() {
             try {
                 await KhachHangService.registerKhachHang(this.registerData);
-                this.successMessage = 'Account created successfully!';
-                setTimeout(() => {
-                    this.successMessage = '';
-                }, 2000);
+                this.showNotification('success', 'Đăng ký thông tin khách hàng thành công!');
             } catch (error) {
-                this.errorMessage = error.message;
-                setTimeout(() => {
-                    this.errorMessage = '';
-                }, 2000);
+                this.showNotification('error', error.message || 'Lỗi khi đăng ký thông tin khách hàng!');
             }
-        }
+        },
+        showNotification(type, message) {
+            notification[type]({
+                message: 'Thông báo',
+                description: message,
+            });
+        },
     }
 }
 </script>

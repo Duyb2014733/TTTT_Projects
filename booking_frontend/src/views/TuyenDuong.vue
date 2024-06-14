@@ -98,7 +98,7 @@ export default {
             try {
                 this.TuyenDuongs = await TuyenDuongService.getAllTuyenDuongs();
             } catch (error) {
-                console.error('Error fetching TuyenDuongs:', error);
+                console.error('Lỗi tìm nạp tuyến đường:', error);
             }
         },
         showAddModal() {
@@ -111,9 +111,9 @@ export default {
                 await this.fetchTuyenDuongs();
                 this.isAddModalVisible = false;
                 this.resetNewTuyenDuong();
-                this.showNotification('success', 'TuyenDuong added successfully');
+                this.showNotification('success', 'Thêm thông tin tuyến đường thành công!');
             } catch (error) {
-                console.error('Error adding TuyenDuong:', error);
+                console.error('Lỗi thêm tuyến đường:', error);
             }
         },
         handleAddCancel() {
@@ -133,9 +133,9 @@ export default {
                 await TuyenDuongService.updateTuyenDuong(this.currentTuyenDuong._id, this.currentTuyenDuong);
                 await this.fetchTuyenDuongs();
                 this.isEditModalVisible = false;
-                this.showNotification('success', 'TuyenDuong updated successfully');
+                this.showNotification('success', 'Thêm thông tin tuyến đường thành công!');
             } catch (error) {
-                console.error('Error updating TuyenDuong:', error);
+                console.error('Lỗi cập nhật thông tin tuyến đường:', error);
             }
         },
         handleEditCancel() {
@@ -146,9 +146,9 @@ export default {
                 try {
                     await TuyenDuongService.deleteTuyenDuong(TuyenDuongId);
                     await this.fetchTuyenDuongs();
-                    this.showNotification('success', 'TuyenDuong deleted successfully');
+                    this.showNotification('success', 'Xóa thông tin tuyến đường thành công!');
                 } catch (error) {
-                    console.error('Error deleting TuyenDuong:', error);
+                    console.error('Lỗi xóa thông tin tuyến đường:', error);
                 }
             }
         },

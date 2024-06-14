@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <form class="form" @submit.prevent="submitForm">
-                    <p class="form-title">Sign in to your account</p>
+                    <p class="form-title">Đăng nhập tài khoản</p>
                     <div class="input-container form-group">
                         <input v-model="loginData.email" type="email" placeholder="Enter email" class="form-control"
                             required>
@@ -12,9 +12,9 @@
                         <input v-model="loginData.password" type="password" placeholder="Enter password"
                             class="form-control" required>
                     </div>
-                    <button type="submit" class="submit">Sign in</button>
+                    <button type="submit" class="submit">Đăng nhập</button>
                     <p class="signup-link">
-                        No account? <router-link :to="{ name: 'Register' }">Sign up</router-link>
+                        Bạn chưa có tài khoản? <router-link :to="{ name: 'Register' }">Đăng ký</router-link>
                     </p>
                 </form>
             </div>
@@ -39,12 +39,12 @@ export default {
         async submitForm() {
             try {
                 const khachHang = await KhachHangService.loginKhachHang(this.loginData);
-                this.showNotification('success', 'Login successful!');
+                this.showNotification('success', 'Đăng nhập thành công!');
                 setTimeout(() => {
                     this.$router.push({ name: 'admin' });
                 }, 2000);
             } catch (error) {
-                this.showNotification('error', error.message || 'Login failed');
+                this.showNotification('error', error.message || 'Đăng nhập thất bại!');
             }
         },
         showNotification(type, message) {

@@ -1,155 +1,77 @@
 <template>
-    <div class="layout-wrapper">
-        <div class="layout-sidebar">
-            <div class="logo" style="color: #fff; text-align: center; font-size: large;">ADMIN PANEL</div>
-            <ul class="layout-menu">
-                <li v-for="item in menuItems" :key="item.key" :class="{ active: isActive(item.to) }">
-                    <router-link :to="item.to" class="layout-menu-link">
-                        <i :class="item.icon"></i>
-                        <span class="ms-2"> {{ item.label }}</span>
-                    </router-link>
-                </li>
-            </ul>
-        </div>
-        <div class="layout-main">
-            <div class="layout-content">
+    <a-layout class="layout">
+        <a-layout-header>
+            <div class="logo"></div>
+            <a-menu :selectedKeys="selectedKeys" theme="dark" mode="horizontal" :style="{ lineHeight: '64px' }">
+                <a-menu-item key="1">
+                    <router-link to="/" slot="title">Trang chủ</router-link>
+                </a-menu-item>
+                <a-menu-item key="2">Hóa đơn</a-menu-item>
+                <a-menu-item key="3">Liên hệ</a-menu-item>
+                <a-menu-item key="right" style="margin-left: auto; border: none">
+                    <a-menu-item key="4">
+                        <router-link to="/login" slot="title">Đăng nhập</router-link>
+                    </a-menu-item>
+                    <a-menu-item key="5">
+                        <router-link to="/register" slot="title">Đăng ký</router-link>
+                    </a-menu-item>
+                </a-menu-item>
+            </a-menu>
+        </a-layout-header>
+        <a-layout-content style="padding: 0 50px">
+            <div :style="{ background: '#fff', padding: '24px', minHeight: '280px' }">
                 <router-view />
             </div>
-            <div class="layout-footer" style="text-align: center">
-                Lê Đức Duy
-            </div>
-        </div>
-    </div>
+        </a-layout-content>
+        <a-layout-footer style="text-align: center">
+            Ant Design ©2018 Created by Ant UED
+        </a-layout-footer>
+    </a-layout>
 </template>
 
 <script>
+import { Breadcrumb, Layout, Menu } from 'ant-design-vue';
+
 export default {
+    components: {
+        'a-layout': Layout,
+        'a-layout-header': Layout.Header,
+        'a-layout-content': Layout.Content,
+        'a-layout-footer': Layout.Footer,
+        'a-menu': Menu,
+        'a-menu-item': Menu.Item,
+        'a-breadcrumb': Breadcrumb,
+        'a-breadcrumb-item': Breadcrumb.Item,
+    },
     data() {
         return {
-            menuItems: [
-                {
-                    label: 'Quản lý Khách Hàng',
-                    icon: 'fa-regular fa-user',
-                    to: '/khachhang',
-                    key: '1'
-                },
-                {
-                    label: 'Quản lý tuyến đường',
-                    icon: 'fa-solid fa-route',
-                    to: '/tuyenduong',
-                    key: '2'
-                },
-                {
-                    label: 'Quản lý Nhà Xe',
-                    icon: 'fa-solid fa-bus',
-                    to: '/nhaxe',
-                    key: '3'
-                },
-                {
-                    label: 'Quản lý Vé',
-                    icon: 'fa-solid fa-ticket',
-                    to: '/ve',
-                    key: '4'
-                },
-                {
-                    label: 'Quản lý chuyến xe',
-                    icon: 'fa-solid fa-van-shuttle',
-                    to: '/chuyenxe',
-                    key: '5'
-                },
-                {
-                    label: 'Quản lý thanh toán',
-                    icon: 'fa-solid fa-credit-card',
-                    to: '/thanhtoan',
-                    key: '5'
-                },
-                {
-                    label: 'Đăng nhập',
-                    icon: 'fa-solid fa-right-to-bracket',
-                    to: '/login',
-                    key: '7'
-                },
-                {
-                    label: 'Đăng ký',
-                    icon: 'fa-solid fa-user-plus',
-                    to: '/register',
-                    key: '8'
-                }
-            ]
+            selectedKeys: ['1'],
         };
     },
-    methods: {
-        isActive(path) {
-            return this.$route.path === path;
-        }
-    }
 };
 </script>
 
 <style scoped>
-.layout-wrapper {
-    display: flex;
-    height: 100vh;
+.site-layout-content {
+    min-height: 280px;
+    padding: 24px;
+    background: #fff;
 }
 
-.layout-sidebar {
-    flex: 0 0 250px;
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
+#components-layout-demo-top .logo {
+    float: left;
+    width: 120px;
+    height: 31px;
+    margin: 16px 24px 16px 0;
+    background: rgba(255, 255, 255, 0.3);
 }
 
-.layout-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.ant-row-rtl #components-layout-demo-top .logo {
+    float: right;
+    margin: 16px 0 16px 24px;
 }
 
-.layout-content {
-    flex: 1;
-    padding: 20px;
-    background-color: #f5f5f5;
-}
-
-.layout-footer {
-    padding: 10px;
-    background-color: #fff;
-    text-align: center;
-}
-
-.layout-menu {
-    list-style: none;
-    padding: 0;
-    margin-top: 20px;
-}
-
-.layout-menu li {
-    margin-bottom: 10px;
-}
-
-.layout-menu .layout-menu-link {
-    display: flex;
-    align-items: center;
-    color: #fff;
-    text-decoration: none;
-    padding: 10px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-.layout-menu .layout-menu-link:hover {
-    background-color: #444;
-}
-
-.layout-menu .layout-menu-link .pi {
-    margin-right: 10px;
-}
-
-.layout-menu .active .layout-menu-link {
-    background-color: #555;
-}
-
-.ms-2 {
-    margin-left: 0.5rem;
+[data-theme='dark'] .site-layout-content {
+    background: #333;
 }
 </style>

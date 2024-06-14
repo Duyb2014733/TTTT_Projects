@@ -1,17 +1,17 @@
 <script>
+import AppHeaderAdmin from "@/components/AppHeader.admin.vue";
 import AppHeader from "@/components/AppHeader.vue";
 export default {
   components: {
+    AppHeaderAdmin,
     AppHeader,
   },
 };
 </script>
 <template>
   <div id="app">
+    <!-- <AppHeaderAdmin /> -->
     <AppHeader />
-    <!-- <div class="container mt-3">
-      <router-view />
-    </div> -->
   </div>
 </template>
 <style>
