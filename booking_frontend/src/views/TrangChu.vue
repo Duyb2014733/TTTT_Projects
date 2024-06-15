@@ -5,25 +5,34 @@
             <div class="form-center">
                 <a-form layout="inline" class="form-inline">
                     <a-form-item>
-                        <i class="fa-solid fa-location-dot">
-                            <a-select v-model="departureLocation" show-search placeholder="Chọn điểm đi"
-                                :filter-option="filterOption" :options="locations" class="form-item" />
-                        </i>
+                        <i class="fa-solid fa-location-dot"></i>
+                        <a-select v-model="departureLocation" placeholder="Chọn điểm đi" class="form-item">
+                            <a-select-option v-for="TuyenDuong in TuyenDuongs" :key="TuyenDuong._id"
+                                :value="TuyenDuong.departure_city">
+                                {{ TuyenDuong.departure_city }}
+                            </a-select-option>
+                        </a-select>
                     </a-form-item>
-                    <a-form-item>
-                        <i class="fa-solid fa-location-dot">
-                            <a-select v-model="destination" show-search placeholder="Chọn điểm đến"
-                                :filter-option="filterOption" :options="locations" class="form-item" />
-                        </i>
 
+                    <a-form-item>
+                        <i class="fa-solid fa-location-dot"></i>
+                        <a-select v-model="destination" placeholder="Chọn điểm đến" class="form-item">
+                            <a-select-option v-for="TuyenDuong in TuyenDuongs" :key="TuyenDuong._id"
+                                :value="TuyenDuong.arrival_city">
+                                {{ TuyenDuong.arrival_city }}
+                            </a-select-option>
+                        </a-select>
+                    </a-form-item>
+
+                    <a-form-item>
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <a-date-picker v-model="departureDate" placeholder="Ngày đi" class="form-item" />
                     </a-form-item>
                     <a-form-item>
-                        <i class="fa-solid fa-calendar-days">
-                            <a-date-picker v-model="departureDate" placeholder="Ngày đi" class="form-item" />
-                        </i>
-                    </a-form-item>
-                    <a-form-item>
-                        <button type="primary" @click="searchRoutes" class="form-item"><span>Tìm kiếm</span></button>
+                        <button type="button" @click="searchRoutes" class="form-item">
+
+                            <router-link to="/bolocve" slot="title"><span>Tìm kiếm</span></router-link>
+                        </button>
                     </a-form-item>
                 </a-form>
             </div>
@@ -32,38 +41,34 @@
 </template>
 
 <script>
-import { Button, DatePicker, Form, Select } from 'ant-design-vue';
+import TuyenDuongService from '@/services/TuyenDuongService';
 
 export default {
-    components: {
-        'a-form': Form,
-        'a-form-item': Form.Item,
-        'a-select': Select,
-        'a-date-picker': DatePicker,
-        'a-button': Button,
-    },
     data() {
         return {
             departureLocation: '',
             destination: '',
             departureDate: null,
-            locations: [
-                { value: 'hanoi', label: 'Hà Nội' },
-                { value: 'danang', label: 'Đà Nẵng' },
-                { value: 'hochiminh', label: 'Hồ Chí Minh' },
-                // Thêm các địa điểm khác vào đây
-            ],
+            TuyenDuongs: [],
         };
     },
     methods: {
-        filterOption(input, option) {
-            return option.label.toLowerCase().includes(input.toLowerCase());
+        async fetchTuyenDuongs() {
+            try {
+                this.TuyenDuongs = await TuyenDuongService.getAllTuyenDuongs();
+            } catch (error) {
+                console.error('Lỗi tìm nạp tuyến đường:', error);
+            }
         },
         searchRoutes() {
             console.log('Tìm kiếm với điểm đi:', this.departureLocation);
             console.log('Tìm kiếm với điểm đến:', this.destination);
             console.log('Tìm kiếm với ngày đi:', this.departureDate);
+            // Implement search logic here
         },
+    },
+    mounted() {
+        this.fetchTuyenDuongs();
     },
 };
 </script>
