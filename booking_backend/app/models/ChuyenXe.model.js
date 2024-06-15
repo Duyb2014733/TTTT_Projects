@@ -13,6 +13,7 @@ const ChuyenXeSchema = new mongoose.Schema({
   },
   departure_time: { type: Date, required: true },
   arrival_time: { type: Date, required: true },
+  image: { type: String, required: true },
 });
 
 const ChuyenXe = mongoose.model("ChuyenXe", ChuyenXeSchema);

@@ -1,16 +1,27 @@
 const ChuyenXeService = require("../services/ChuyenXe.service");
+const upload = require("../middlewares/upload");
 const ApiError = require("../api-error");
 
 const chuyenXeService = new ChuyenXeService();
 
 exports.createChuyenXe = async (req, res, next) => {
-  try {
-    const chuyenXeData = req.body;
-    const newChuyenXe = await chuyenXeService.createChuyenXe(chuyenXeData);
-    res.status(201).json(newChuyenXe);
-  } catch (error) {
-    next(new ApiError(500, error.message));
-  }
+  upload(req, res, async (err) => {
+    if (err) {
+      return next(ApiError.badRequest(err.message));
+    }
+
+    try {
+      const imagePath = req.file ? req.file.path : null;
+      const chuyenXeData = req.body;
+      const newChuyenXe = await chuyenXeService.createChuyenXe(
+        chuyenXeData,
+        imagePath
+      );
+      res.status(201).json(newChuyenXe);
+    } catch (error) {
+      next(ApiError.internal(error.message));
+    }
+  });
 };
 
 exports.getChuyenXeById = async (req, res, next) => {

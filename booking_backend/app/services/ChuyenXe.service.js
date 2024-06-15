@@ -2,9 +2,12 @@ const ChuyenXe = require("../models/ChuyenXe.model");
 
 class ChuyenXeService {
   // Tạo một chuyến xe mới
-  async createChuyenXe(chuyenXeData) {
+  async createChuyenXe(chuyenXeData, imagePath) {
     try {
-      const chuyenXe = new ChuyenXe(chuyenXeData);
+      const chuyenXe = new ChuyenXe({
+        ...chuyenXeData,
+        image: imagePath, // Add the image path to the data
+      });
       return await chuyenXe.save();
     } catch (error) {
       throw error;
