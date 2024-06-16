@@ -1,6 +1,7 @@
 const KhachHangService = require("../services/KhachHang.service");
 const KhachHang = require("../models/KhachHang.model");
 const ApiError = require("../api-error");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const khachHangService = new KhachHangService();
@@ -45,9 +46,18 @@ exports.loginKhachHang = async (req, res, next) => {
     if (!validPassword) {
       return res.status(404).json("Invalid email or password.");
     }
-
     // Nếu email và password đúng, trả về thông tin người dùng
-    return res.status(200).json(khachhang);
+    if (khachhang && validPassword) {
+      const accessToken = jwt.sign(
+        {
+          _id: khachhang._id,
+          admin: khachhang.admin,
+        },
+        process.env.JWT_ACCESS_KEY,
+        { expiresIn: "30s" }
+      );
+      return res.status(200).json({ khachhang, accessToken });
+    }
   } catch (error) {
     // Nếu có lỗi xảy ra, chuyển đến middleware xử lý lỗi tiếp theo
     next(error);

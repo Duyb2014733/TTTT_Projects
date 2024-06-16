@@ -7,7 +7,7 @@ const ThanhToanRouter = require("./app/routes/ThanhToan.route");
 const TuyenDuongRouter = require("./app/routes/TuyenDuong.route");
 const VeRouter = require("./app/routes/Ve.route");
 const ApiError = require("./app/api-error");
-
+require("dotenv").config();
 const app = express();
 
 app.use(cors());

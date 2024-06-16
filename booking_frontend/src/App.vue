@@ -10,8 +10,8 @@ export default {
 </script>
 <template>
   <div id="app">
-    <!-- <AppHeaderAdmin /> -->
-    <AppHeader />
+    <AppHeaderAdmin />
+    <!-- <AppHeader /> -->
   </div>
 </template>
 <style>
