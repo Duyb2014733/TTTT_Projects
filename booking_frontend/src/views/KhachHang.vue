@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="header">
-            <h1>Quản lý Nhà Xe</h1>
+            <h1>Quản lý Khách hàng</h1>
             <!-- <a-button type="primary" @click="showAddModal">
                 <i class="fa-solid fa-plus"></i>
                 <span class="ms-2">Thêm khách hàng</span>
@@ -92,9 +92,14 @@ export default {
     methods: {
         async fetchKhachHangs() {
             try {
-                this.KhachHangs = await KhachHangService.getAllKhachHangs();
+                const token = localStorage.getItem('accessToken');
+                if (token) {
+                    this.KhachHangs = await KhachHangService.getAllKhachHangs(token);
+                } else {
+                    console.error("No access token found");
+                }
             } catch (error) {
-                console.error('Error fetching bus stations:', error);
+                console.error("Error fetching total users:", error);
             }
         },
         // showAddModal() {

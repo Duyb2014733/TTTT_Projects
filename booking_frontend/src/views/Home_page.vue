@@ -52,8 +52,13 @@ export default {
     },
     async mounted() {
         try {
-            const users = await KhachHangService.getAllKhachHangs();
-            this.totalKhachHangs = users.length;
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                const users = await KhachHangService.getAllKhachHangs(token);
+                this.totalKhachHangs = users.length;
+            } else {
+                console.error("No access token found");
+            }
         } catch (error) {
             console.error("Error fetching total users:", error);
         }

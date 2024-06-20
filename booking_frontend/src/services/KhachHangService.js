@@ -8,28 +8,75 @@ class KhachHangService {
   async registerKhachHang(khachHangData) {
     return (await this.api.post("/", khachHangData)).data;
   }
-  async loginKhachHang(khachHangData) {
-    return (await this.api.post("/login", khachHangData)).data;
+
+  async loginKhachHang(khachHangData, accessToken) {
+    return (
+      await this.api.post("/login", khachHangData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async getKhachHangById(khachHangId) {
-    return (await this.api.get(`/${khachHangId}`)).data;
+  async logoutKhachHang(khachHangData, accessToken) {
+    return (
+      await this.api.post("/logout", khachHangData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async getAllKhachHangs() {
-    return (await this.api.get("/")).data;
+  async getKhachHangById(khachHangId, accessToken) {
+    return (
+      await this.api.get(`/${khachHangId}`, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async updateKhachHang(khachHangId, khachHangData) {
-    return (await this.api.put(`/${khachHangId}`, khachHangData)).data;
+  async getAllKhachHangs(accessToken) {
+    return (
+      await this.api.get("/", {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteKhachHang(khachHangId) {
-    return (await this.api.delete(`/${khachHangId}`)).data;
+  async updateKhachHang(khachHangId, khachHangData, accessToken) {
+    return (
+      await this.api.put(`/${khachHangId}`, khachHangData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteAllKhachHangs() {
-    return (await this.api.delete("/")).data;
+  async deleteKhachHang(khachHangId, accessToken) {
+    return (
+      await this.api.delete(`/${khachHangId}`, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
+  }
+
+  async deleteAllKhachHangs(accessToken) {
+    return (
+      await this.api.delete("/", {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 }
 

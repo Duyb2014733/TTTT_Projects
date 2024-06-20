@@ -39,10 +39,22 @@ export default {
         async submitForm() {
             try {
                 const khachHang = await KhachHangService.loginKhachHang(this.loginData);
+                localStorage.setItem('accessToken', khachHang.accessToken);
+                localStorage.setItem('isAdmin', khachHang.admin);
                 this.showNotification('success', 'Đăng nhập thành công!');
-                setTimeout(() => {
-                    this.$router.push({ name: 'admin' });
-                }, 2000);
+
+                if (khachHang.admin === true) {
+                    setTimeout(() => {
+                        this.$router.push({ name: 'admin' });
+                        // window.location.reload();
+                    }, 2000);
+
+                } else {
+                    setTimeout(() => {
+                        this.$router.push({ name: 'TrangChu' });
+                        // window.location.reload();
+                    }, 2000);
+                }
             } catch (error) {
                 this.showNotification('error', error.message || 'Đăng nhập thất bại!');
             }
@@ -57,7 +69,6 @@ export default {
 }
 </script>
 
-
 <style scoped>
 .form {
     background-color: #fff;
@@ -66,6 +77,8 @@ export default {
     max-width: 350px;
     border-radius: 0.5rem;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    margin: auto;
+    /* Center the form horizontally */
 }
 
 .form-title {

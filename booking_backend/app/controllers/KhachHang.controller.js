@@ -1,8 +1,8 @@
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const KhachHangService = require("../services/KhachHang.service");
 const KhachHang = require("../models/KhachHang.model");
 const ApiError = require("../api-error");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 
 const khachHangService = new KhachHangService();
 
@@ -14,7 +14,7 @@ exports.registerKhachHang = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
     // Tạo một đối tượng người dùng mới với password đã hash
-    const newKhachHang = await khachHangService.createKhachHang({
+    const newKhachHang = await KhachHang.create({
       name: req.body.name,
       email: req.body.email,
       phone: req.body.phone,
@@ -46,6 +46,7 @@ exports.loginKhachHang = async (req, res, next) => {
     if (!validPassword) {
       return res.status(404).json("Invalid email or password.");
     }
+
     // Nếu email và password đúng, trả về thông tin người dùng
     if (khachhang && validPassword) {
       const accessToken = jwt.sign(
@@ -54,14 +55,70 @@ exports.loginKhachHang = async (req, res, next) => {
           admin: khachhang.admin,
         },
         process.env.JWT_ACCESS_KEY,
-        { expiresIn: "30s" }
+        { expiresIn: "30d" }
       );
-      return res.status(200).json({ khachhang, accessToken });
+
+      const refreshToken = jwt.sign(
+        {
+          _id: khachhang._id,
+          admin: khachhang.admin,
+        },
+        process.env.JWT_REFRESH_KEY,
+        { expiresIn: "365d" }
+      );
+
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: false,
+        path: "/",
+        sameSite: "strict",
+      });
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        path: "/",
+        sameSite: "strict",
+      });
+
+      res.cookie("isAdmin", khachhang.admin.toString(), {
+        // Chuyển đổi thành chuỗi để lưu vào cookie
+        httpOnly: true,
+        secure: false,
+        path: "/",
+        sameSite: "strict",
+      });
+
+      const { password, ...others } = khachhang._doc;
+      return res.status(200).json({ ...others, accessToken });
     }
   } catch (error) {
     // Nếu có lỗi xảy ra, chuyển đến middleware xử lý lỗi tiếp theo
     next(error);
   }
+};
+
+exports.logoutKhachHang = (req, res) => {
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: false,
+    path: "/",
+    sameSite: "strict",
+  });
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: false,
+    path: "/",
+    sameSite: "strict",
+  });
+  res.clearCookie("isAdmin", {
+    // Xóa cookie isAdmin khi đăng xuất
+    httpOnly: true,
+    secure: false,
+    path: "/",
+    sameSite: "strict",
+  });
+  return res.status(200).json("Logged out successfully.");
 };
 
 exports.getKhachHangById = async (req, res, next) => {
