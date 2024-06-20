@@ -45,15 +45,14 @@ export default {
 
                 if (khachHang.admin === true) {
                     setTimeout(() => {
-                        this.$router.push({ name: 'admin' });
-                        // window.location.reload();
-                    }, 2000);
-
+                        window.location.reload();
+                    }, 200);
+                    this.$router.push({ name: 'admin' });
                 } else {
                     setTimeout(() => {
-                        this.$router.push({ name: 'TrangChu' });
-                        // window.location.reload();
-                    }, 2000);
+                        window.location.reload();
+                    }, 200);
+                    this.$router.push({ name: 'TrangChu' });
                 }
             } catch (error) {
                 this.showNotification('error', error.message || 'Đăng nhập thất bại!');
@@ -70,6 +69,17 @@ export default {
 </script>
 
 <style scoped>
+/* Hiệu ứng fade-in khi component được mount */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+}
+
 .form {
     background-color: #fff;
     display: block;
@@ -78,7 +88,6 @@ export default {
     border-radius: 0.5rem;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     margin: auto;
-    /* Center the form horizontally */
 }
 
 .form-title {

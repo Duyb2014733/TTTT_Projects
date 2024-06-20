@@ -59,6 +59,9 @@ export default {
             try {
                 await KhachHangService.registerKhachHang(this.registerData);
                 this.showNotification('success', 'Đăng ký thông tin khách hàng thành công!');
+                setTimeout(() => {
+                    this.$router.push({ name: 'Login' });
+                }, 2000);
             } catch (error) {
                 this.showNotification('error', error.message || 'Lỗi khi đăng ký thông tin khách hàng!');
             }
@@ -81,7 +84,6 @@ export default {
     border-radius: 0.5rem;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     margin: auto;
-    /* Center the form horizontally */
 }
 
 .form-title {
