@@ -41,17 +41,18 @@ export default {
                 const khachHang = await KhachHangService.loginKhachHang(this.loginData);
                 localStorage.setItem('accessToken', khachHang.accessToken);
                 localStorage.setItem('isAdmin', khachHang.admin);
+                localStorage.setItem('idKhachHang', khachHang._id);
                 this.showNotification('success', 'Đăng nhập thành công!');
 
                 if (khachHang.admin === true) {
                     setTimeout(() => {
                         window.location.reload();
-                    }, 200);
+                    }, 2000);
                     this.$router.push({ name: 'admin' });
                 } else {
                     setTimeout(() => {
                         window.location.reload();
-                    }, 200);
+                    }, 2000);
                     this.$router.push({ name: 'TrangChu' });
                 }
             } catch (error) {

@@ -51,6 +51,11 @@ const routes = [
     component: () => import("@/views/TrangChu.vue"),
   },
   {
+    path: "/profile",
+    name: "Profile",
+    component: () => import("@/views/Profile.vue"),
+  },
+  {
     path: "/admin",
     name: "admin",
     component: () => import("@/views/Home_page.vue"),
