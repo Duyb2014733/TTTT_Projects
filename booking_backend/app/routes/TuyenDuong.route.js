@@ -1,17 +1,27 @@
 const express = require("express");
 const router = express.Router();
+const middlewareController = require("../controllers/Middleware.controller");
 const tuyenDuongController = require("../controllers/TuyenDuong.controller");
 
 router
   .route("/")
-  .post(tuyenDuongController.createTuyenDuong)
-  .get(tuyenDuongController.getAllTuyenDuongs)
-  .delete(tuyenDuongController.deleteAllTuyenDuongs);
+  .post(
+    middlewareController.verifyTokenAndAdmin,
+    tuyenDuongController.createTuyenDuong
+  )
+  .get(middlewareController.verifyToken, tuyenDuongController.getAllTuyenDuongs)
+  .delete(
+    middlewareController.verifyTokenAndAdmin,
+    tuyenDuongController.deleteAllTuyenDuongs
+  );
 
 router
   .route("/:id")
-  .get(tuyenDuongController.getTuyenDuongById)
-  .put(tuyenDuongController.updateTuyenDuong)
-  .delete(tuyenDuongController.deleteTuyenDuong);
+  .get(middlewareController.verifyToken, tuyenDuongController.getTuyenDuongById)
+  .put(middlewareController.verifyToken, tuyenDuongController.updateTuyenDuong)
+  .delete(
+    middlewareController.verifyToken,
+    tuyenDuongController.deleteTuyenDuong
+  );
 
 module.exports = router;

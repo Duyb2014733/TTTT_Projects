@@ -1,17 +1,24 @@
 const express = require("express");
 const router = express.Router();
+const middlewareController = require("../controllers/Middleware.controller");
 const chuyenXeController = require("../controllers/ChuyenXe.controller");
 
 router
   .route("/")
-  .post(chuyenXeController.createChuyenXe)
-  .get(chuyenXeController.getAllChuyenXes)
-  .delete(chuyenXeController.deleteAllChuyenXes);
+  .post(
+    middlewareController.verifyTokenAndAdmin,
+    chuyenXeController.createChuyenXe
+  )
+  .get(middlewareController.verifyToken, chuyenXeController.getAllChuyenXes)
+  .delete(
+    middlewareController.verifyTokenAndAdmin,
+    chuyenXeController.deleteAllChuyenXes
+  );
 
 router
   .route("/:id")
-  .get(chuyenXeController.getChuyenXeById)
-  .put(chuyenXeController.updateChuyenXe)
-  .delete(chuyenXeController.deleteChuyenXe);
+  .get(middlewareController.verifyToken, chuyenXeController.getChuyenXeById)
+  .put(middlewareController.verifyToken, chuyenXeController.updateChuyenXe)
+  .delete(middlewareController.verifyToken, chuyenXeController.deleteChuyenXe);
 
 module.exports = router;
