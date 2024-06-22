@@ -22,10 +22,10 @@
                         </router-link>
                     </li>
                     <li>
-                        <a @click="logout" class="layout-menu-link" href="#">
+                        <router-link to="/logout" class="layout-menu-link">
                             <i class="fa-solid fa-sign-out-alt"></i>
                             <span class="ms-2">Đăng xuất</span>
-                        </a>
+                        </router-link>
                     </li>
                 </template>
                 <template v-else>
@@ -96,13 +96,6 @@ export default {
         },
         checkLoginStatus() {
             this.isLoggedIn = !!localStorage.getItem('accessToken');
-        },
-        logout() {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('isAdmin');
-            localStorage.removeItem('idKhachHang');
-            this.isLoggedIn = false;
-            this.$router.push({ name: 'Login' });
         }
     },
     created() {
