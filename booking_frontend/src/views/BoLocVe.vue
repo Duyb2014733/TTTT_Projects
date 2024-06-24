@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="col-sm-8">
-                <h1>Chào mừng bạn đến với Booking-tickets</h1>
+
             </div>
         </div>
     </div>
@@ -80,7 +80,7 @@ export default {
 
 <style scoped>
 .search-form {
-    /* background-image: url("../assets/img/rice-terraces-2389023_1280.jpg"); */
+    background-image: url("../assets/img/rice-terraces-2389023_1280.jpg");
     background-color: rgba(255, 255, 255, 0.8);
     padding: 40px 20px;
     border-radius: 10px;

@@ -5,8 +5,14 @@ class NhaXeService {
     this.api = createApiClient(baseUrl);
   }
 
-  async createNhaXe(nhaXeData) {
-    return (await this.api.post("/", nhaXeData)).data;
+  async createNhaXe(nhaXeData, accessToken) {
+    return (
+      await this.api.post("/", nhaXeData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
   async getNhaXeById(nhaXeId) {
@@ -17,16 +23,34 @@ class NhaXeService {
     return (await this.api.get("/")).data;
   }
 
-  async updateNhaXe(nhaXeId, nhaXeData) {
-    return (await this.api.put(`/${nhaXeId}`, nhaXeData)).data;
+  async updateNhaXe(nhaXeId, nhaXeData, accessToken) {
+    return (
+      await this.api.put(`/${nhaXeId}`, nhaXeData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteNhaXe(nhaXeId) {
-    return (await this.api.delete(`/${nhaXeId}`)).data;
+  async deleteNhaXe(nhaXeId, accessToken) {
+    return (
+      await this.api.delete(`/${nhaXeId}`, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteAllNhaXes() {
-    return (await this.api.delete("/")).data;
+  async deleteAllNhaXes(accessToken) {
+    return (
+      await this.api.delete("/", {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 }
 

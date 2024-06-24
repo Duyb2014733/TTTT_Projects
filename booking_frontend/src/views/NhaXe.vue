@@ -31,13 +31,17 @@
                     :rules="[{ required: true, message: 'Vui lòng nhập tên công ty!' }]">
                     <a-input v-model:value="newNhaXe.company_name" placeholder="Tên Công Ty" />
                 </a-form-item>
-                <a-form-item name="bus_number" label="Số Xe"
-                    :rules="[{ required: true, message: 'Vui lòng nhập số xe!' }]">
-                    <a-input v-model:value="newNhaXe.bus_number" placeholder="Số Xe" />
+                <a-form-item name="dia_chi" label="Địa Chỉ"
+                    :rules="[{ required: true, message: 'Vui lòng nhập địa chỉ!' }]">
+                    <a-input v-model:value="newNhaXe.dia_chi" placeholder="Địa Chỉ" />
                 </a-form-item>
-                <a-form-item name="bus_type" label="Loại Xe"
-                    :rules="[{ required: true, message: 'Vui lòng nhập loại xe!' }]">
-                    <a-input v-model:value="newNhaXe.bus_type" placeholder="Loại Xe" />
+                <a-form-item name="so_dien_thoai" label="Số Điện Thoại"
+                    :rules="[{ required: true, message: 'Vui lòng nhập số điện thoại!' }]">
+                    <a-input v-model:value="newNhaXe.so_dien_thoai" placeholder="Số Điện Thoại" />
+                </a-form-item>
+                <a-form-item name="so_luong_xe" label="Số Lượng Xe"
+                    :rules="[{ required: true, message: 'Vui lòng nhập số lượng xe!' }]">
+                    <a-input v-model:value="newNhaXe.so_luong_xe" placeholder="Số Lượng Xe" />
                 </a-form-item>
             </a-form>
         </a-modal>
@@ -49,35 +53,41 @@
                     :rules="[{ required: true, message: 'Vui lòng nhập tên công ty!' }]">
                     <a-input v-model:value="currentNhaXe.company_name" placeholder="Tên Công Ty" />
                 </a-form-item>
-                <a-form-item name="bus_number" label="Số Xe"
-                    :rules="[{ required: true, message: 'Vui lòng nhập số xe!' }]">
-                    <a-input v-model:value="currentNhaXe.bus_number" placeholder="Số Xe" />
+                <a-form-item name="dia_chi" label="Địa Chỉ"
+                    :rules="[{ required: true, message: 'Vui lòng nhập địa chỉ!' }]">
+                    <a-input v-model:value="currentNhaXe.dia_chi" placeholder="Địa Chỉ" />
                 </a-form-item>
-                <a-form-item name="bus_type" label="Loại Xe"
-                    :rules="[{ required: true, message: 'Vui lòng nhập loại xe!' }]">
-                    <a-input v-model:value="currentNhaXe.bus_type" placeholder="Loại Xe" />
+                <a-form-item name="so_dien_thoai" label="Số Điện Thoại"
+                    :rules="[{ required: true, message: 'Vui lòng nhập số điện thoại!' }]">
+                    <a-input v-model:value="currentNhaXe.so_dien_thoai" placeholder="Số Điện Thoại" />
+                </a-form-item>
+                <a-form-item name="so_luong_xe" label="Số Lượng Xe"
+                    :rules="[{ required: true, message: 'Vui lòng nhập số lượng xe!' }]">
+                    <a-input v-model:value="currentNhaXe.so_luong_xe" placeholder="Số Lượng Xe" />
                 </a-form-item>
             </a-form>
         </a-modal>
     </div>
 </template>
+
 <script>
 import NhaXeService from "@/services/NhaXeService";
-import { notification } from 'ant-design-vue';
+import { notification } from "ant-design-vue";
 
 export default {
     data() {
         return {
             columns: [
-                { title: 'Tên Công Ty', dataIndex: 'company_name', key: 'company_name' },
-                { title: 'Số Xe', dataIndex: 'bus_number', key: 'bus_number' },
-                { title: 'Loại Xe', dataIndex: 'bus_type', key: 'bus_type' },
-                { title: 'Hành Động', key: 'action' },
+                { title: "Tên Công Ty", dataIndex: "company_name", key: "company_name" },
+                { title: "Địa Chỉ", dataIndex: "dia_chi", key: "dia_chi" },
+                { title: "Số Điện Thoại", dataIndex: "so_dien_thoai", key: "so_dien_thoai" },
+                { title: "Số Lượng Xe", dataIndex: "so_luong_xe", key: "so_luong_xe" },
+                { title: "Hành Động", key: "action" },
             ],
             NhaXes: [],
             isAddModalVisible: false,
             isEditModalVisible: false,
-            newNhaXe: { company_name: '', bus_number: '', bus_type: '' },
+            newNhaXe: { company_name: "", dia_chi: "", so_dien_thoai: "", so_luong_xe: 0 },
             currentNhaXe: null,
         };
     },
@@ -86,7 +96,7 @@ export default {
             try {
                 this.NhaXes = await NhaXeService.getAllNhaXes();
             } catch (error) {
-                console.error('Error fetching bus stations:', error);
+                console.error("Error fetching bus stations:", error);
             }
         },
         showAddModal() {
@@ -94,14 +104,15 @@ export default {
         },
         async addNhaXe() {
             try {
+                const token = await localStorage.getItem("accessToken");
                 await this.$refs.addFormRef.validate();
-                await NhaXeService.createNhaXe(this.newNhaXe);
+                await NhaXeService.createNhaXe(this.newNhaXe, token);
                 await this.fetchNhaXes();
                 this.isAddModalVisible = false;
                 this.resetNewNhaXe();
-                this.showNotification('success', 'Bus station added successfully');
+                this.showNotification("success", "Bus station added successfully");
             } catch (error) {
-                console.error('Error adding bus station:', error);
+                console.error("Error adding bus station:", error);
             }
         },
         handleAddCancel() {
@@ -109,7 +120,7 @@ export default {
             this.resetNewNhaXe();
         },
         resetNewNhaXe() {
-            this.newNhaXe = { company_name: '', bus_number: '', bus_type: '' };
+            this.newNhaXe = { company_name: "", dia_chi: "", so_dien_thoai: "", so_luong_xe: 0 };
         },
         showEditModal(NhaXe) {
             this.currentNhaXe = { ...NhaXe };
@@ -117,32 +128,34 @@ export default {
         },
         async editNhaXe() {
             try {
+                const token = await localStorage.getItem("accessToken");
                 await this.$refs.editFormRef.validate();
-                await NhaXeService.updateNhaXe(this.currentNhaXe._id, this.currentNhaXe);
+                await NhaXeService.updateNhaXe(this.currentNhaXe._id, this.currentNhaXe, token);
                 await this.fetchNhaXes();
                 this.isEditModalVisible = false;
-                this.showNotification('success', 'Bus station updated successfully');
+                this.showNotification("success", "Bus station updated successfully");
             } catch (error) {
-                console.error('Error updating bus station:', error);
+                console.error("Error updating bus station:", error);
             }
         },
         handleEditCancel() {
             this.isEditModalVisible = false;
         },
         async deleteRecord(NhaXeId) {
-            if (confirm('Bạn có chắc muốn xóa trạm này không?')) {
+            if (confirm("Bạn có chắc muốn xóa trạm này không?")) {
                 try {
-                    await NhaXeService.deleteNhaXe(NhaXeId);
+                    const token = await localStorage.getItem("accessToken");
+                    await NhaXeService.deleteNhaXe(NhaXeId, token);
                     await this.fetchNhaXes();
-                    this.showNotification('success', 'Bus station deleted successfully');
+                    this.showNotification("success", "Bus station deleted successfully");
                 } catch (error) {
-                    console.error('Error deleting bus station:', error);
+                    console.error("Error deleting bus station:", error);
                 }
             }
         },
         showNotification(type, message) {
             notification[type]({
-                message: 'Thông báo',
+                message: "Thông báo",
                 description: message,
             });
         },

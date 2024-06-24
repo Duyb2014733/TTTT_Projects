@@ -9,7 +9,7 @@ router
     middlewareController.verifyTokenAndAdmin,
     tuyenDuongController.createTuyenDuong
   )
-  .get(middlewareController.verifyToken, tuyenDuongController.getAllTuyenDuongs)
+  .get(tuyenDuongController.getAllTuyenDuongs)
   .delete(
     middlewareController.verifyTokenAndAdmin,
     tuyenDuongController.deleteAllTuyenDuongs

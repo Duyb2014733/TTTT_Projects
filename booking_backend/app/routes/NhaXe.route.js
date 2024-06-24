@@ -6,16 +6,15 @@ const nhaXeController = require("../controllers/NhaXe.controller");
 router
   .route("/")
   .post(middlewareController.verifyTokenAndAdmin, nhaXeController.createNhaXe)
-  .get(middlewareController.verifyToken, nhaXeController.getAllNhaXes)
-  .delete(
-    middlewareController.verifyTokenAndAdmin,
-    nhaXeController.deleteAllNhaXes
-  );
+  .get(nhaXeController.getAllNhaXe);
 
 router
-  .route("/:id")
-  .get(middlewareController.verifyToken, nhaXeController.getNhaXeById)
-  .put(middlewareController.verifyToken, nhaXeController.updateNhaXe)
-  .delete(middlewareController.verifyToken, nhaXeController.deleteNhaXe);
+  .route("/id")
+  .get(nhaXeController.getNhaXeById)
+  .put(middlewareController.verifyTokenAndAdmin, nhaXeController.updateNhaXe)
+  .delete(
+    middlewareController.verifyTokenAndAdmin,
+    nhaXeController.deleteNhaXe
+  );
 
 module.exports = router;

@@ -3,6 +3,7 @@ const cors = require("cors");
 const KhachHangRouter = require("./app/routes/KhachHang.route");
 const ChuyenXeRouter = require("./app/routes/ChuyenXe.route");
 const NhaXeRouter = require("./app/routes/NhaXe.route");
+const XeRouter = require("./app/routes/Xe.route");
 const ThanhToanRouter = require("./app/routes/ThanhToan.route");
 const TuyenDuongRouter = require("./app/routes/TuyenDuong.route");
 const VeRouter = require("./app/routes/Ve.route");
@@ -23,6 +24,7 @@ app.use("/api/nhaxe/", NhaXeRouter);
 app.use("/api/thanhtoan/", ThanhToanRouter);
 app.use("/api/tuyenduong/", TuyenDuongRouter);
 app.use("/api/ve/", VeRouter);
+app.use("/api/xe/", XeRouter);
 
 app.use((req, res, next) => {
   return next(new ApiError(404, "Không tìm thấy tài nguyên"));

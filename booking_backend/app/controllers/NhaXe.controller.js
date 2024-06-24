@@ -3,70 +3,56 @@ const ApiError = require("../api-error");
 
 const nhaXeService = new NhaXeService();
 
-exports.createNhaXe = async (req, res, next) => {
+exports.getAllNhaXe = async (req, res, next) => {
   try {
-    const nhaXeData = req.body;
-    const newNhaXe = await nhaXeService.createNhaXe(nhaXeData);
-    res.status(201).json(newNhaXe);
+    const nhaXe = await nhaXeService.getAllNhaXe();
+    res.status(200).json(nhaXe);
   } catch (error) {
-    next(new ApiError(500, error.message));
+    next(new ApiError(500, "Lỗi khi lấy danh sách nhà xe"));
   }
 };
 
 exports.getNhaXeById = async (req, res, next) => {
   try {
-    const nhaXeId = req.params.id;
-    const nhaXe = await nhaXeService.getNhaXeById(nhaXeId);
+    const nhaXe = await nhaXeService.getNhaXeById(req.params.id);
     if (!nhaXe) {
-      return next(new ApiError(404, "Bus station not found"));
+      return next(new ApiError(404, "Không tìm thấy nhà xe"));
     }
     res.status(200).json(nhaXe);
   } catch (error) {
-    next(new ApiError(500, error.message));
+    next(new ApiError(500, "Lỗi khi lấy thông tin nhà xe"));
   }
 };
 
-exports.getAllNhaXes = async (req, res, next) => {
+exports.createNhaXe = async (req, res, next) => {
   try {
-    const nhaXes = await nhaXeService.getAllNhaXe();
-    res.status(200).json(nhaXes);
+    const nhaXe = await nhaXeService.createNhaXe(req.body);
+    res.status(201).json(nhaXe);
   } catch (error) {
-    next(new ApiError(500, error.message));
+    next(new ApiError(400, "Lỗi khi tạo nhà xe"));
   }
 };
 
 exports.updateNhaXe = async (req, res, next) => {
   try {
-    const nhaXeId = req.params.id;
-    const nhaXeData = req.body;
-    const updatedNhaXe = await nhaXeService.updateNhaXe(nhaXeId, nhaXeData);
-    if (!updatedNhaXe) {
-      return next(new ApiError(404, "Bus station not found"));
+    const nhaXe = await nhaXeService.updateNhaXe(req.params.id, req.body);
+    if (!nhaXe) {
+      return next(new ApiError(404, "Không tìm thấy nhà xe"));
     }
-    res.status(200).json(updatedNhaXe);
+    res.status(200).json(nhaXe);
   } catch (error) {
-    next(new ApiError(500, error.message));
+    next(new ApiError(400, "Lỗi khi cập nhật nhà xe"));
   }
 };
 
 exports.deleteNhaXe = async (req, res, next) => {
   try {
-    const nhaXeId = req.params.id;
-    const deletedNhaXe = await nhaXeService.deleteNhaXe(nhaXeId);
-    if (!deletedNhaXe) {
-      return next(new ApiError(404, "Bus station not found"));
+    const nhaXe = await nhaXeService.deleteNhaXe(req.params.id);
+    if (!nhaXe) {
+      return next(new ApiError(404, "Không tìm thấy nhà xe"));
     }
-    res.status(204).send();
+    res.status(204).json({ message: "Đã xóa nhà xe" });
   } catch (error) {
-    next(new ApiError(500, error.message));
-  }
-};
-
-exports.deleteAllNhaXes = async (req, res, next) => {
-  try {
-    await nhaXeService.deleteAllNhaXe();
-    res.status(204).send();
-  } catch (error) {
-    next(new ApiError(500, error.message));
+    next(new ApiError(500, "Lỗi khi xóa nhà xe"));
   }
 };

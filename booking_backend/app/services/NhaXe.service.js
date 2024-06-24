@@ -1,61 +1,36 @@
 const NhaXe = require("../models/NhaXe.model");
+const Xe = require("../models/Xe.model");
 
 class NhaXeService {
-  // Tạo một nhà xe mới
-  async createNhaXe(nhaXeData) {
-    try {
-      const nhaXe = new NhaXe(nhaXeData);
-      return await nhaXe.save();
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Lấy thông tin của một nhà xe dựa trên ID
-  async getNhaXeById(nhaXeId) {
-    try {
-      return await NhaXe.findById(nhaXeId);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Lấy danh sách tất cả các nhà xe
   async getAllNhaXe() {
-    try {
-      return await NhaXe.find();
-    } catch (error) {
-      throw error;
-    }
+    return await NhaXe.find();
   }
 
-  // Cập nhật thông tin của một nhà xe
-  async updateNhaXe(nhaXeId, nhaXeData) {
-    try {
-      return await NhaXe.findByIdAndUpdate(nhaXeId, nhaXeData, {
-        new: true,
-      });
-    } catch (error) {
-      throw error;
-    }
+  async getNhaXeById(id) {
+    return await NhaXe.findById(id);
   }
 
-  // Xóa một nhà xe dựa trên ID
-  async deleteNhaXe(nhaXeId) {
-    try {
-      return await NhaXe.findByIdAndDelete(nhaXeId);
-    } catch (error) {
-      throw error;
-    }
+  async createNhaXe(nhaXeData) {
+    const nhaXe = new NhaXe(nhaXeData);
+    return await nhaXe.save();
   }
 
-  // Xóa tất cả các nhà xe
-  async deleteAllNhaXe() {
-    try {
-      return await NhaXe.deleteMany({});
-    } catch (error) {
-      throw error;
-    }
+  async updateNhaXe(id, nhaXeData) {
+    return await NhaXe.findByIdAndUpdate(id, nhaXeData, { new: true });
+  }
+
+  async deleteNhaXe(id) {
+    return await NhaXe.findByIdAndDelete(id);
+  }
+
+  async updateXeCount(nhaXeId) {
+    const count = await Xe.countDocuments({ nha_xe: nhaXeId });
+    const nhaXe = await NhaXe.findByIdAndUpdate(
+      nhaXeId,
+      { so_luong_xe: count },
+      { new: true }
+    );
+    return nhaXe;
   }
 }
 

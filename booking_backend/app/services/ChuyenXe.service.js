@@ -64,6 +64,47 @@ class ChuyenXeService {
       throw error;
     }
   }
+
+  async searchTrips(searchCriteria) {
+    const { departure_city, arrival_city, departure_date } = searchCriteria;
+
+    try {
+      // First, find matching TuyenDuong
+      const matchingRoutes = await TuyenDuong.find({
+        departure_city: departure_city,
+        arrival_city: arrival_city,
+      });
+
+      if (matchingRoutes.length === 0) {
+        return [];
+      }
+
+      const routeIds = matchingRoutes.map((route) => route._id);
+
+      // Then, search for ChuyenXe with matching route_id and departure_time
+      let query = {
+        route_id: { $in: routeIds },
+      };
+
+      if (departure_date) {
+        const startOfDay = new Date(departure_date);
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date(departure_date);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        query.departure_time = { $gte: startOfDay, $lte: endOfDay };
+      }
+
+      const trips = await ChuyenXe.find(query)
+        .populate("bus_id", "name") // Assuming NhaXe model has a 'name' field
+        .populate("route_id");
+
+      return trips;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = ChuyenXeService;

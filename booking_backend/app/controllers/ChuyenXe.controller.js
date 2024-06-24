@@ -84,3 +84,16 @@ exports.deleteAllChuyenXes = async (req, res, next) => {
     next(new ApiError(500, error.message));
   }
 };
+
+exports.searchTrips = async (req, res) => {
+  try {
+    const searchCriteria = req.body;
+    const trips = await chuyenXeService.searchTrips(searchCriteria);
+    res.status(200).json(trips);
+  } catch (error) {
+    res.status(500).json({
+      message: "An error occurred while searching for trips",
+      error: error.message,
+    });
+  }
+};

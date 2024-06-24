@@ -106,8 +106,9 @@ export default {
         },
         async addTuyenDuong() {
             try {
+                const token = await localStorage.getItem('accessToken');
                 await this.$refs.addFormRef.validate();
-                await TuyenDuongService.createTuyenDuong(this.newTuyenDuong);
+                await TuyenDuongService.createTuyenDuong(this.newTuyenDuong, token);
                 await this.fetchTuyenDuongs();
                 this.isAddModalVisible = false;
                 this.resetNewTuyenDuong();
@@ -129,8 +130,9 @@ export default {
         },
         async editTuyenDuong() {
             try {
+                const token = await localStorage.getItem('accessToken');
                 await this.$refs.editFormRef.validate();
-                await TuyenDuongService.updateTuyenDuong(this.currentTuyenDuong._id, this.currentTuyenDuong);
+                await TuyenDuongService.updateTuyenDuong(this.currentTuyenDuong._id, this.currentTuyenDuong, token);
                 await this.fetchTuyenDuongs();
                 this.isEditModalVisible = false;
                 this.showNotification('success', 'Thêm thông tin tuyến đường thành công!');
@@ -144,7 +146,8 @@ export default {
         async deleteRecord(TuyenDuongId) {
             if (confirm('Bạn có chắc muốn xóa tuyến đường này không?')) {
                 try {
-                    await TuyenDuongService.deleteTuyenDuong(TuyenDuongId);
+                    const token = await localStorage.getItem('accessToken');
+                    await TuyenDuongService.deleteTuyenDuong(TuyenDuongId, token);
                     await this.fetchTuyenDuongs();
                     this.showNotification('success', 'Xóa thông tin tuyến đường thành công!');
                 } catch (error) {

@@ -21,4 +21,6 @@ router
   .put(middlewareController.verifyToken, chuyenXeController.updateChuyenXe)
   .delete(middlewareController.verifyToken, chuyenXeController.deleteChuyenXe);
 
+router.post("/search", chuyenXeController.searchTrips);
+
 module.exports = router;

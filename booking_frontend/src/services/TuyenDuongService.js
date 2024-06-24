@@ -5,8 +5,14 @@ class TuyenDuongService {
     this.api = createApiClient(baseUrl);
   }
 
-  async createTuyenDuong(tuyenDuongData) {
-    return (await this.api.post("/", tuyenDuongData)).data;
+  async createTuyenDuong(tuyenDuongData, accessToken) {
+    return (
+      await this.api.post("/", tuyenDuongData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
   async getTuyenDuongById(tuyenDuongId) {
@@ -17,16 +23,34 @@ class TuyenDuongService {
     return (await this.api.get("/")).data;
   }
 
-  async updateTuyenDuong(tuyenDuongId, tuyenDuongData) {
-    return (await this.api.put(`/${tuyenDuongId}`, tuyenDuongData)).data;
+  async updateTuyenDuong(tuyenDuongId, tuyenDuongData, accessToken) {
+    return (
+      await this.api.put(`/${tuyenDuongId}`, tuyenDuongData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteTuyenDuong(tuyenDuongId) {
-    return (await this.api.delete(`/${tuyenDuongId}`)).data;
+  async deleteTuyenDuong(tuyenDuongId, accessToken) {
+    return (
+      await this.api.delete(`/${tuyenDuongId}`, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteAllTuyenDuongs() {
-    return (await this.api.delete("/")).data;
+  async deleteAllTuyenDuongs(accessToken) {
+    return (
+      await this.api.delete("/", {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 }
 

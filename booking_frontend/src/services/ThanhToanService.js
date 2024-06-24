@@ -5,8 +5,14 @@ class ThanhToanService {
     this.api = createApiClient(baseUrl);
   }
 
-  async createThanhToan(thanhToanData) {
-    return (await this.api.post("/", thanhToanData)).data;
+  async createThanhToan(thanhToanData, accessToken) {
+    return (
+      await this.api.post("/", thanhToanData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
   async getThanhToanById(thanhToanId) {
