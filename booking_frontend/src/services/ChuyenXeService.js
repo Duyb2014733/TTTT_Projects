@@ -5,8 +5,14 @@ class ChuyenXeService {
     this.api = createApiClient(baseUrl);
   }
 
-  async createChuyenXe(chuyenXeData) {
-    return (await this.api.post("/", chuyenXeData)).data;
+  async createChuyenXe(chuyenXeData, accessToken) {
+    return (
+      await this.api.post("/", chuyenXeData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
   async getChuyenXeById(chuyenXeId) {
@@ -17,16 +23,34 @@ class ChuyenXeService {
     return (await this.api.get("/")).data;
   }
 
-  async updateChuyenXe(chuyenXeId, chuyenXeData) {
-    return (await this.api.put(`/${chuyenXeId}`, chuyenXeData)).data;
+  async updateChuyenXe(chuyenXeId, chuyenXeData, accessToken) {
+    return (
+      await this.api.put(`/${chuyenXeId}`, chuyenXeData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteChuyenXe(chuyenXeId) {
-    return (await this.api.delete(`/${chuyenXeId}`)).data;
+  async deleteChuyenXe(chuyenXeId, accessToken) {
+    return (
+      await this.api.delete(`/${chuyenXeId}`, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteAllChuyenXes() {
-    return (await this.api.delete("/")).data;
+  async deleteAllChuyenXes(accessToken) {
+    return (
+      await this.api.delete("/", {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 }
 

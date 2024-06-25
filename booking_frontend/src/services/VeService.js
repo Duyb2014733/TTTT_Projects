@@ -5,8 +5,14 @@ class VeService {
     this.api = createApiClient(baseUrl);
   }
 
-  async createVe(veData) {
-    return (await this.api.post("/", veData)).data;
+  async createVe(veData, accessToken) {
+    return (
+      await this.api.post("/", veData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
   async getVeById(veId) {
@@ -17,16 +23,34 @@ class VeService {
     return (await this.api.get("/")).data;
   }
 
-  async updateVe(veId, veData) {
-    return (await this.api.put(`/${veId}`, veData)).data;
+  async updateVe(veId, veData, accessToken) {
+    return (
+      await this.api.put(`/${veId}`, veData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteVe(veId) {
-    return (await this.api.delete(`/${veId}`)).data;
+  async deleteVe(veId, accessToken) {
+    return (
+      await this.api.delete(`/${veId}`, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteAllVes() {
-    return (await this.api.delete("/")).data;
+  async deleteAllVes(accessToken) {
+    return (
+      await this.api.delete("/", {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 }
 
