@@ -136,15 +136,18 @@ body {
 /* Layout styles */
 .layout-wrapper {
     display: flex;
-    flex-direction: row;
-    /* Keep this to align sidebar and main content horizontally */
+    /* Use flex column to make sidebar fixed */
+    flex-direction: column;
     height: 100vh;
     background-color: #f0f2f5;
 }
 
 .layout-sidebar {
     width: 250px;
-    /* Fixed width for the sidebar */
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
     background-color: #001529;
     color: #fff;
     padding: 20px 10px;
@@ -155,6 +158,8 @@ body {
 
 .layout-main {
     flex: 1;
+    margin-left: 250px;
+    /* Add margin to the main content to adjust for fixed sidebar */
     display: flex;
     flex-direction: column;
     background-color: #f0f2f5;
@@ -166,6 +171,8 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    /* Allow scrolling if content overflows */
 }
 
 .layout-footer {
