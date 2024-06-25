@@ -15,6 +15,10 @@ class NhaXeService {
     return await nhaXe.save();
   }
 
+  async findNhaXeBySoDienThoai(soDienThoai) {
+    return await NhaXe.findOne({ so_dien_thoai: soDienThoai });
+  }
+
   async updateNhaXe(id, nhaXeData) {
     return await NhaXe.findByIdAndUpdate(id, nhaXeData, { new: true });
   }
