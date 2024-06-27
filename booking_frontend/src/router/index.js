@@ -46,9 +46,9 @@ const routes = [
     component: () => import("@/views/ThanhToan.vue"),
   },
   {
-    path: "/bolocve",
-    name: "BoLocVe",
-    component: () => import("@/views/BoLocVe.vue"),
+    path: "/srarchticket",
+    name: "SearchTicket",
+    component: () => import("@/views/SearchTicket.vue"),
   },
   {
     path: "/",
