@@ -9,7 +9,7 @@ router
     middlewareController.verifyTokenAndAdmin,
     chuyenXeController.createChuyenXe
   )
-  .get(middlewareController.verifyToken, chuyenXeController.getAllChuyenXes)
+  .get(chuyenXeController.getAllChuyenXes)
   .delete(
     middlewareController.verifyTokenAndAdmin,
     chuyenXeController.deleteAllChuyenXes
@@ -17,7 +17,7 @@ router
 
 router
   .route("/:id")
-  .get(middlewareController.verifyToken, chuyenXeController.getChuyenXeById)
+  .get(chuyenXeController.getChuyenXeById)
   .put(middlewareController.verifyToken, chuyenXeController.updateChuyenXe)
   .delete(middlewareController.verifyToken, chuyenXeController.deleteChuyenXe);
 

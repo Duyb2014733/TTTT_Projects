@@ -9,7 +9,7 @@ router
     middlewareController.verifyTokenAndAdmin,
     thanhToanController.createThanhToan
   )
-  .get(middlewareController.verifyToken, thanhToanController.getAllThanhToans)
+  .get(thanhToanController.getAllThanhToans)
   .delete(
     middlewareController.verifyTokenAndAdmin,
     thanhToanController.deleteAllThanhToans
@@ -17,7 +17,7 @@ router
 
 router
   .route("/:id")
-  .get(middlewareController.verifyToken, thanhToanController.getThanhToanById)
+  .get(thanhToanController.getThanhToanById)
   .put(middlewareController.verifyToken, thanhToanController.updateThanhToan)
   .delete(
     middlewareController.verifyToken,
