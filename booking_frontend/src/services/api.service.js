@@ -6,26 +6,21 @@ const commonConfig = {
   },
 };
 
-const createAxiosInstance = (baseURL) => {
-  const instance = axios.create({
+export default (baseURL) => {
+  return axios.create({
     baseURL,
     ...commonConfig,
+    upload: (url, data, config = {}) => {
+      const formData = new FormData();
+      Object.keys(data).forEach((key) => formData.append(key, data[key]));
+      return axios.post(url, formData, {
+        ...commonConfig,
+        ...config,
+        headers: {
+          ...commonConfig.headers,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    },
   });
-
-  instance.upload = (url, data, config = {}) => {
-    const formData = new FormData();
-    Object.keys(data).forEach((key) => formData.append(key, data[key]));
-    return instance.post(url, formData, {
-      ...commonConfig,
-      ...config,
-      headers: {
-        ...commonConfig.headers,
-        "Content-Type": "multipart/form-data",
-      },
-    });
-  };
-
-  return instance;
 };
-
-export default createAxiosInstance;

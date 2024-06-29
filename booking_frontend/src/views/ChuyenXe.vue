@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div class="header">
             <h1>Quản lý Chuyến Xe</h1>
             <a-button type="primary" @click="showAddModal">
@@ -61,11 +61,12 @@
                     <a-date-picker v-model:value="newChuyenXe.arrival_time" show-time />
                 </a-form-item>
                 <a-form-item name="image" label="Hình ảnh">
-                    <a-upload :before-upload="beforeUpload" @change="handleAddImageChange">
-                        <a-button icon="upload">
-                            Chọn file
-                        </a-button>
+                    <a-upload :before-upload="beforeUpload" @change="handleAddImageChange"
+                        :customRequest="customRequest">
+                        <a-button icon="upload">Chọn file</a-button>
                     </a-upload>
+                    <!-- <img v-if="newChuyenXe.image" :src="newChuyenXe.image" alt="Preview"
+                        style="max-width: 200px; margin-top: 10px;" /> -->
                 </a-form-item>
             </a-form>
         </a-modal>
@@ -97,7 +98,8 @@
                     <a-date-picker v-model="currentChuyenXe.arrival_time" show-time />
                 </a-form-item>
                 <a-form-item label="Hình ảnh">
-                    <a-upload :before-upload="beforeUpload" @change="handleEditImageChange">
+                    <a-upload :before-upload="beforeUpload" @change="handleEditImageChange"
+                        :customRequest="customRequest">
                         <a-button icon="upload">
                             Chọn file
                         </a-button>
@@ -171,7 +173,18 @@ export default defineComponent({
             try {
                 await this.$refs.addFormRef.validate();
                 const token = await localStorage.getItem("accessToken");
-                await ChuyenXeService.createChuyenXe(this.newChuyenXe, token);
+
+                // Create FormData object
+                const formData = new FormData();
+                Object.keys(this.newChuyenXe).forEach(key => {
+                    if (key === 'image' && this.newChuyenXe[key] instanceof File) {
+                        formData.append(key, this.newChuyenXe[key]);
+                    } else {
+                        formData.append(key, this.newChuyenXe[key]);
+                    }
+                });
+
+                await ChuyenXeService.createChuyenXe(formData, token);
                 await this.fetchChuyenXes();
                 this.isAddModalVisible = false;
                 message.success('Chuyến xe được thêm thành công');
@@ -187,7 +200,19 @@ export default defineComponent({
         async editChuyenXe() {
             try {
                 await this.$refs.editFormRef.validate();
-                await ChuyenXeService.updateChuyenXe(this.currentChuyenXe._id, this.currentChuyenXe);
+                const token = await localStorage.getItem("accessToken");
+
+                // Create FormData object
+                const formData = new FormData();
+                Object.keys(this.currentChuyenXe).forEach(key => {
+                    if (key === 'image' && this.currentChuyenXe[key] instanceof File) {
+                        formData.append(key, this.currentChuyenXe[key]);
+                    } else if (key !== '_id') {
+                        formData.append(key, this.currentChuyenXe[key]);
+                    }
+                });
+
+                await ChuyenXeService.updateChuyenXe(this.currentChuyenXe._id, formData, token);
                 await this.fetchChuyenXes();
                 this.isEditModalVisible = false;
                 message.success('Chuyến xe được cập nhật thành công');
@@ -216,24 +241,30 @@ export default defineComponent({
         beforeUpload(file) {
             const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
             const isImage = validImageTypes.includes(file.type);
+            const isLt2M = file.size / 1024 / 1024 < 2;
+
             if (!isImage) {
                 notification.error({ message: 'Bạn chỉ có thể tải lên các file JPG, JPEG, PNG, GIF hoặc WEBP!' });
-            }
-            const isLt2M = file.size / 1024 / 1024 < 2;
-            if (!isLt2M) {
+            } else if (!isLt2M) {
                 notification.error({ message: 'Kích thước file phải nhỏ hơn 2MB!' });
             }
+
             return isImage && isLt2M;
         },
 
         handleAddImageChange(info) {
             if (info.file.status === 'done') {
-                this.newChuyenXe.image = info.file.response.filePath;
+                this.newChuyenXe.image = info.file.originFileObj;
             }
+        },
+        customRequest({ file, onSuccess }) {
+            setTimeout(() => {
+                onSuccess("ok");
+            }, 0);
         },
         handleEditImageChange(info) {
             if (info.file.status === 'done') {
-                this.currentChuyenXe.image = info.file.response.filePath;
+                this.currentChuyenXe.image = info.file.originFileObj;
             }
         },
     },

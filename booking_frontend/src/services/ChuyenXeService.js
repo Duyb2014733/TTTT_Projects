@@ -7,8 +7,9 @@ class ChuyenXeService {
 
   async createChuyenXe(chuyenXeData, accessToken) {
     return (
-      await this.api.upload("/", chuyenXeData, {
+      await this.api.post("/", chuyenXeData, {
         headers: {
+          "Content-Type": "multipart/form-data",
           token: `Bearer ${accessToken}`,
         },
       })
@@ -27,6 +28,7 @@ class ChuyenXeService {
     return (
       await this.api.put(`/${chuyenXeId}`, chuyenXeData, {
         headers: {
+          "Content-Type": "multipart/form-data",
           token: `Bearer ${accessToken}`,
         },
       })
