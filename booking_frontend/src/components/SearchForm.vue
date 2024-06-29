@@ -9,9 +9,8 @@
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-location-dot"></i></span>
                                 <a-select v-model:value="departureLocation" placeholder="Sài Gòn" class="form-control">
-                                    <a-select-option v-for="TuyenDuong in TuyenDuongs" :key="TuyenDuong._id"
-                                        :value="TuyenDuong.departure_city">
-                                        {{ TuyenDuong.departure_city }}
+                                    <a-select-option v-for="city in uniqueDepartureCities" :key="city" :value="city">
+                                        {{ city }}
                                     </a-select-option>
                                 </a-select>
                             </div>
@@ -25,9 +24,8 @@
                                 <span class="input-group-text"><i class="fas fa-location-dot"></i></span>
                                 <a-select v-model:value="destination" placeholder="Nha Trang - Khánh H"
                                     class="form-control">
-                                    <a-select-option v-for="TuyenDuong in TuyenDuongs" :key="TuyenDuong._id"
-                                        :value="TuyenDuong.arrival_city">
-                                        {{ TuyenDuong.arrival_city }}
+                                    <a-select-option v-for="city in uniqueArrivalCities" :key="city" :value="city">
+                                        {{ city }}
                                     </a-select-option>
                                 </a-select>
                             </div>
@@ -39,7 +37,7 @@
                             <div class="field-label">Ngày đi</div>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-calendar-days"></i></span>
-                                <a-date-picker v-model:value="departureDate" placeholder="T5, 27/06/2024"
+                                <a-date-picker v-model:value="departureDate" placeholder="T4, 26/06/2024"
                                     class="form-control" />
                             </div>
                         </a-form-item>
@@ -47,7 +45,7 @@
 
                     <div class="form-item">
                         <a-form-item class="mb-0">
-                            <div class="field-label">&nbsp;</div> <!-- Placeholder to align button -->
+                            <div class="field-label">&nbsp;</div>
                             <a-button type="primary" @click="searchRoutes" class="search-button">
                                 Tìm kiếm
                             </a-button>
@@ -70,6 +68,14 @@ export default {
             departureDate: null,
             TuyenDuongs: []
         };
+    },
+    computed: {
+        uniqueDepartureCities() {
+            return [...new Set(this.TuyenDuongs.map(td => td.departure_city))];
+        },
+        uniqueArrivalCities() {
+            return [...new Set(this.TuyenDuongs.map(td => td.arrival_city))];
+        }
     },
     methods: {
         async fetchTuyenDuongs() {

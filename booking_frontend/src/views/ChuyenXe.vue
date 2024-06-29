@@ -8,6 +8,7 @@
             </a-button>
         </div>
 
+        <!-- Table để hiển thị danh sách Chuyen Xes -->
         <a-table :columns="columns" :dataSource="ChuyenXes" rowKey="_id">
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
@@ -33,17 +34,18 @@
             </template>
         </a-table>
 
-        <!-- Add chuyến xe Modal -->
-        <a-modal title="Thêm chuyến xe" v-model="isAddModalVisible" @cancel="handleAddCancel" @ok="addChuyenXe">
+        <!-- Modal Thêm Chuyen Xe -->
+        <a-modal title="Thêm chuyến xe" v-model:visible="isAddModalVisible" @cancel="handleAddCancel" @ok="addChuyenXe">
             <a-form ref="addFormRef" :model="newChuyenXe" layout="vertical">
-                <a-form-item label="Id nhà xe" :rules="{ required: true, message: 'Vui lòng chọn Id nhà xe!' }">
+                <a-form-item name="bus_id" label="Id nhà xe"
+                    :rules="{ required: true, message: 'Vui lòng chọn Id nhà xe!' }">
                     <a-select v-model:value="newChuyenXe.bus_id" placeholder="Chọn Id nhà xe">
                         <a-select-option v-for="nhaXe in NhaXes" :key="nhaXe._id" :value="nhaXe._id">
                             {{ nhaXe.company_name }}
                         </a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item label="Id tuyến đường"
+                <a-form-item name="route_id" label="Id tuyến đường"
                     :rules="{ required: true, message: 'Vui lòng chọn Id tuyến đường!' }">
                     <a-select v-model:value="newChuyenXe.route_id" placeholder="Chọn Id tuyến đường">
                         <a-select-option v-for="tuyenDuong in TuyenDuongs" :key="tuyenDuong._id"
@@ -52,29 +54,25 @@
                         </a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item label="Thời gian xuất phát"
-                    :rules="{ required: true, message: 'Vui lòng nhập thời gian xuất phát!' }">
-                    <a-date-picker v-model:value="newChuyenXe.departure_time" show-time
-                        placeholder="Chọn thời gian xuất phát" />
+                <a-form-item name="departure_time" label="Thời gian xuất phát">
+                    <a-date-picker v-model:value="newChuyenXe.departure_time" show-time />
                 </a-form-item>
-                <a-form-item label="Thời gian đến" :rules="{ required: true, message: 'Vui lòng nhập thời gian đến!' }">
-                    <a-date-picker v-model:value="newChuyenXe.arrival_time" show-time
-                        placeholder="Chọn thời gian đến" />
+                <a-form-item name="arrival_time" label="Thời gian đến">
+                    <a-date-picker v-model:value="newChuyenXe.arrival_time" show-time />
                 </a-form-item>
-                <a-form-item label="Hình ảnh">
-                    <a-upload :before-upload="beforeUpload" :show-upload-list="false" @change="handleAddImageChange">
-                        <a-button>
-                            <upload-outlined></upload-outlined> Chọn file
+                <a-form-item name="image" label="Hình ảnh">
+                    <a-upload :before-upload="beforeUpload" @change="handleAddImageChange">
+                        <a-button icon="upload">
+                            Chọn file
                         </a-button>
                     </a-upload>
-                    <img v-if="newChuyenXe.image" :src="newChuyenXe.image" alt="Preview"
-                        style="max-width: 100px; margin-top: 10px;" />
                 </a-form-item>
             </a-form>
         </a-modal>
 
-        <!-- Edit chuyến xe Modal -->
-        <a-modal title="Chỉnh sửa chuyến xe" v-model="isEditModalVisible" @cancel="handleEditCancel" @ok="editChuyenXe">
+        <!-- Modal Chỉnh sửa Chuyen Xe -->
+        <a-modal title="Chỉnh sửa chuyến xe" v-model:visible="isEditModalVisible" @cancel="handleEditCancel"
+            @ok="editChuyenXe">
             <a-form ref="editFormRef" :model="currentChuyenXe" layout="vertical">
                 <a-form-item label="Id nhà xe" :rules="{ required: true, message: 'Vui lòng chọn Id nhà xe!' }">
                     <a-select v-model="currentChuyenXe.bus_id" placeholder="Chọn Id nhà xe">
@@ -85,48 +83,40 @@
                 </a-form-item>
                 <a-form-item label="Id tuyến đường"
                     :rules="{ required: true, message: 'Vui lòng chọn Id tuyến đường!' }">
-                    <a-select v-model:value="currentChuyenXe.route_id" placeholder="Chọn Id tuyến đường">
+                    <a-select v-model="currentChuyenXe.route_id" placeholder="Chọn Id tuyến đường">
                         <a-select-option v-for="tuyenDuong in TuyenDuongs" :key="tuyenDuong._id"
                             :value="tuyenDuong._id">
                             {{ tuyenDuong.departure_city }} - {{ tuyenDuong.arrival_city }}
                         </a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item label="Thời gian xuất phát"
-                    :rules="{ required: true, message: 'Vui lòng nhập thời gian xuất phát!' }">
-                    <a-date-picker v-model:value="currentChuyenXe.departure_time" show-time
-                        placeholder="Chọn thời gian xuất phát" />
+                <a-form-item label="Thời gian xuất phát">
+                    <a-date-picker v-model="currentChuyenXe.departure_time" show-time />
                 </a-form-item>
-                <a-form-item label="Thời gian đến" :rules="{ required: true, message: 'Vui lòng nhập thời gian đến!' }">
-                    <a-date-picker v-model:value="currentChuyenXe.arrival_time" show-time
-                        placeholder="Chọn thời gian đến" />
+                <a-form-item label="Thời gian đến">
+                    <a-date-picker v-model="currentChuyenXe.arrival_time" show-time />
                 </a-form-item>
                 <a-form-item label="Hình ảnh">
-                    <a-upload :before-upload="beforeUpload" :show-upload-list="false" @change="handleEditImageChange">
-                        <a-button>
-                            <upload-outlined></upload-outlined> Chọn file
+                    <a-upload :before-upload="beforeUpload" @change="handleEditImageChange">
+                        <a-button icon="upload">
+                            Chọn file
                         </a-button>
                     </a-upload>
-                    <img v-if="currentChuyenXe.image" :src="currentChuyenXe.image" alt="Preview"
-                        style="max-width: 100px; margin-top: 10px;" />
                 </a-form-item>
             </a-form>
         </a-modal>
     </div>
 </template>
 
-
 <script>
 import ChuyenXeService from '@/services/ChuyenXeService';
 import NhaXeService from '@/services/NhaXeService';
 import TuyenDuongService from '@/services/TuyenDuongService';
-import { UploadOutlined } from '@ant-design/icons-vue';
 import { message, notification } from 'ant-design-vue';
+import { defineComponent } from 'vue';
 
-export default {
-    components: {
-        UploadOutlined,
-    },
+export default defineComponent({
+    name: 'ChuyenXeManagement',
     data() {
         return {
             columns: [
@@ -177,95 +167,85 @@ export default {
         showAddModal() {
             this.isAddModalVisible = true;
         },
-        handleAddCancel() {
-            this.isAddModalVisible = false;
-        },
         async addChuyenXe() {
             try {
-                await ChuyenXeService.createChuyenXe(this.newChuyenXe);
-                message.success('Thêm chuyến xe thành công');
-                this.fetchChuyenXes();
+                await this.$refs.addFormRef.validate();
+                const token = await localStorage.getItem("accessToken");
+                await ChuyenXeService.createChuyenXe(this.newChuyenXe, token);
+                await this.fetchChuyenXes();
                 this.isAddModalVisible = false;
+                message.success('Chuyến xe được thêm thành công');
             } catch (error) {
                 console.error('Error adding chuyen xe:', error);
-                notification.error({ message: 'Thêm chuyến xe thất bại' });
+                message.error('Đã xảy ra lỗi khi thêm chuyến xe');
             }
         },
         showEditModal(record) {
             this.currentChuyenXe = { ...record };
             this.isEditModalVisible = true;
         },
-        handleEditCancel() {
-            this.isEditModalVisible = false;
-        },
         async editChuyenXe() {
             try {
+                await this.$refs.editFormRef.validate();
                 await ChuyenXeService.updateChuyenXe(this.currentChuyenXe._id, this.currentChuyenXe);
-                message.success('Chỉnh sửa chuyến xe thành công');
-                this.fetchChuyenXes();
+                await this.fetchChuyenXes();
                 this.isEditModalVisible = false;
+                message.success('Chuyến xe được cập nhật thành công');
             } catch (error) {
-                console.error('Error editing chuyen xe:', error);
-                notification.error({ message: 'Chỉnh sửa chuyến xe thất bại' });
+                console.error('Error updating chuyen xe:', error);
+                message.error('Đã xảy ra lỗi khi cập nhật chuyến xe');
             }
         },
         async deleteRecord(id) {
             try {
                 await ChuyenXeService.deleteChuyenXe(id);
-                message.success('Xóa chuyến xe thành công');
-                this.fetchChuyenXes();
+                await this.fetchChuyenXes();
+                message.success('Chuyến xe được xóa thành công');
             } catch (error) {
                 console.error('Error deleting chuyen xe:', error);
-                notification.error({ message: 'Xóa chuyến xe thất bại' });
+                message.error('Đã xảy ra lỗi khi xóa chuyến xe');
             }
         },
+        handleAddCancel() {
+            this.$refs.addFormRef.resetFields();
+            this.isAddModalVisible = false;
+        },
+        handleEditCancel() {
+            this.isEditModalVisible = false;
+        },
         beforeUpload(file) {
-            const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-            if (!isJpgOrPng) {
-                message.error('You can only upload JPG/PNG file!');
+            const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            const isImage = validImageTypes.includes(file.type);
+            if (!isImage) {
+                notification.error({ message: 'Bạn chỉ có thể tải lên các file JPG, JPEG, PNG, GIF hoặc WEBP!' });
             }
             const isLt2M = file.size / 1024 / 1024 < 2;
             if (!isLt2M) {
-                message.error('Image must smaller than 2MB!');
+                notification.error({ message: 'Kích thước file phải nhỏ hơn 2MB!' });
             }
-            return isJpgOrPng && isLt2M;
+            return isImage && isLt2M;
         },
-        async handleAddImageChange({ file }) {
-            const formData = new FormData();
-            formData.append('image', file.originFileObj);
 
-            try {
-                const response = await ChuyenXeService.uploadImage(formData);
-                this.newChuyenXe.image = response.data.url;
-            } catch (error) {
-                console.error('Error uploading image:', error);
-                notification.error({ message: 'Upload image failed' });
+        handleAddImageChange(info) {
+            if (info.file.status === 'done') {
+                this.newChuyenXe.image = info.file.response.filePath;
             }
         },
-        async handleEditImageChange({ file }) {
-            const formData = new FormData();
-            formData.append('image', file.originFileObj);
-
-            try {
-                const response = await ChuyenXeService.uploadImage(formData);
-                this.currentChuyenXe.image = response.data.url;
-            } catch (error) {
-                console.error('Error uploading image:', error);
-                notification.error({ message: 'Upload image failed' });
+        handleEditImageChange(info) {
+            if (info.file.status === 'done') {
+                this.currentChuyenXe.image = info.file.response.filePath;
             }
         },
     },
-    created() {
+    mounted() {
         this.fetchChuyenXes();
         this.fetchNhaXes();
         this.fetchTuyenDuongs();
     },
-};
+});
 </script>
 
-
 <style scoped>
-/* Điều chỉnh style cho modal và các phần tử trong modal */
 .container {
     padding: 20px;
 }
@@ -275,9 +255,5 @@ export default {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-}
-
-.ms-2 {
-    margin-left: 8px;
 }
 </style>

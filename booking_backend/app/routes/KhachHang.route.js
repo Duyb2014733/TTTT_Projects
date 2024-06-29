@@ -6,7 +6,7 @@ const khachHangController = require("../controllers/KhachHang.controller");
 router
   .route("/")
   .post(khachHangController.registerKhachHang)
-  .get(middlewareController.verifyToken, khachHangController.getAllKhachHangs)
+  .get(khachHangController.getAllKhachHangs)
   .delete(
     middlewareController.verifyTokenAndAdmin,
     khachHangController.deleteAllKhachHangs
@@ -14,7 +14,7 @@ router
 
 router
   .route("/:id")
-  .get(middlewareController.verifyToken, khachHangController.getKhachHangById)
+  .get(khachHangController.getKhachHangById)
   .put(middlewareController.verifyToken, khachHangController.updateKhachHang)
   .delete(
     middlewareController.verifyToken,

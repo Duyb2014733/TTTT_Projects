@@ -7,7 +7,7 @@ class ChuyenXeService {
 
   async createChuyenXe(chuyenXeData, accessToken) {
     return (
-      await this.api.post("/", chuyenXeData, {
+      await this.api.upload("/", chuyenXeData, {
         headers: {
           token: `Bearer ${accessToken}`,
         },

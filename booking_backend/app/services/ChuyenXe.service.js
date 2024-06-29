@@ -4,10 +4,8 @@ class ChuyenXeService {
   // Tạo một chuyến xe mới
   async createChuyenXe(chuyenXeData, imagePath) {
     try {
-      const chuyenXe = new ChuyenXe({
-        ...chuyenXeData,
-        image: imagePath, // Add the image path to the data
-      });
+      console.log("Creating ChuyenXe with data:", chuyenXeData); // Add this for debugging
+      const chuyenXe = new ChuyenXe(chuyenXeData);
       return await chuyenXe.save();
     } catch (error) {
       throw error;

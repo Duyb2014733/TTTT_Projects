@@ -1,39 +1,41 @@
 const multer = require("multer");
 const path = require("path");
 
-// Set storage engine
 const storage = multer.diskStorage({
-  destination: "./assets/img",
+  destination: "uploads/",
   filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(
       null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+      `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`
     );
   },
 });
 
-// Initialize upload
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1000000 }, // Limit file size to 1MB
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb);
   },
-}).single("image"); // 'image' is the field name
+}).single("image");
+console.log("Upload middleware initialized");
 
-// Check file type
 function checkFileType(file, cb) {
-  // Allowed extensions
-  const filetypes = /jpeg|jpg|png|gif/;
-  // Check extension
+  const filetypes = /jpeg|jpg|png|gif|webp/;
+
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  // Check mime
+
   const mimetype = filetypes.test(file.mimetype);
 
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb("Error: Images Only!");
+    cb(
+      new Error(
+        "Error: Only image files (jpeg, jpg, png, gif, webp) are allowed!"
+      )
+    );
   }
 }
 
