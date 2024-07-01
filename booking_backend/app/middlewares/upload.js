@@ -19,7 +19,6 @@ const upload = multer({
     checkFileType(file, cb);
   },
 }).single("image");
-console.log("Upload middleware initialized");
 
 function checkFileType(file, cb) {
   const filetypes = /jpeg|jpg|png|gif|webp/;
