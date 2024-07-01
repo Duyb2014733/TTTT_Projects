@@ -1,7 +1,11 @@
 <template>
     <div class="layout-wrapper">
         <div class="layout-sidebar">
-            <div class="logo ms-2">ADMIN PANEL</div>
+            <div class="logo-container">
+                <router-link to="/admin" class="logo-link">
+                    <span class="logo-text">ADMIN</span>
+                </router-link>
+            </div>
             <ul class="layout-menu">
                 <li v-for="item in menuItems" :key="item.key" :class="{ active: isActive(item.to) }">
                     <router-link :to="item.to" class="layout-menu-link">
@@ -12,12 +16,12 @@
             </ul>
             <ul class="layout-menu menu-footer">
                 <template v-if="isLoggedIn">
-                    <li :class="{ active: isActive('/profile') }">
+                    <!-- <li :class="{ active: isActive('/profile') }">
                         <router-link to="/profile" class="layout-menu-link">
                             <i class="fa-solid fa-user"></i>
                             <span class="ms-2">Profile</span>
                         </router-link>
-                    </li>
+                    </li> -->
                     <li>
                         <router-link to="/logout" class="layout-menu-link">
                             <i class="fa-solid fa-sign-out-alt"></i>
@@ -79,6 +83,12 @@ export default {
                     label: 'Quản lý chuyến xe',
                     icon: 'fa-solid fa-van-shuttle',
                     to: '/chuyenxe',
+                    key: '5'
+                },
+                {
+                    label: 'Quản lý xe',
+                    icon: 'fa-solid fa-car',
+                    to: '/xe',
                     key: '5'
                 },
                 {
@@ -221,5 +231,36 @@ body {
 
 .ms-2 {
     margin-left: 10px;
+}
+
+/* logo */
+
+.logo-container {
+    padding: 20px 0;
+    text-align: center;
+    background: linear-gradient(135deg);
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.logo-link {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.logo-link:hover .logo-text {
+    color: #ffd700;
+    transform: scale(1.05);
 }
 </style>

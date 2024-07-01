@@ -1,145 +1,111 @@
 <template>
-    <div class="booking-container">
-        <a-row :gutter="[16, 16]">
-            <!-- <a-col :span="24" :md="6">
-                
-            </a-col> -->
-            <a-col :span="24" :md="24">
-                <div v-if="hasSearched && filteredTrips.length > 0" class="search-results">
-                    <h2>Kết quả tìm kiếm</h2>
-                    <a-row :gutter="[16, 16]">
-                        <a-col :span="24" :md="12" :lg="8" v-for="trip in filteredTrips" :key="trip.id">
-                            <a-card class="trip-card" :title="trip.routeName">
-                                <template slot="extra">
-                                    <a-tag color="blue">{{ trip.price }} VND</a-tag>
-                                </template>
-                                <a-descriptions :column="1">
-                                    <a-descriptions-item label="Điểm đi">
-                                        {{ trip.departure_city }}
-                                    </a-descriptions-item>
-                                    <a-descriptions-item label="Điểm đến">
-                                        {{ trip.arrival_city }}
-                                    </a-descriptions-item>
-                                    <a-descriptions-item label="Ngày đi">
-                                        {{ trip.departureDate }}
-                                    </a-descriptions-item>
-                                    <a-descriptions-item label="Giờ khởi hành">
-                                        {{ trip.departureTime }}
-                                    </a-descriptions-item>
-                                </a-descriptions>
-                                <a-button type="primary" block @click="selectTrip(trip)">Chọn chuyến</a-button>
-                            </a-card>
-                        </a-col>
-                    </a-row>
-                </div>
-                <a-empty v-else description="Không tìm thấy chuyến xe phù hợp" />
-            </a-col>
-        </a-row>
+    <div class="search-ticket">
+        <h2>Kết quả tìm kiếm</h2>
+        <a-spin :spinning="loading">
+            <a-alert v-if="error" type="error" :message="error" show-icon style="margin-bottom: 16px;" />
+            <a-empty v-if="!loading && trips.length === 0" description="Không tìm thấy chuyến xe phù hợp." />
+            <a-row :gutter="[16, 16]" v-else>
+                <a-col :xs="24" :sm="12" :md="8" v-for="trip in trips" :key="trip.trip._id">
+                    <a-card hoverable>
+                        <template #cover>
+                            <img alt="Bus" src="https://via.placeholder.com/300x200?text=Bus+Image"
+                                style="object-fit: cover; height: 200px;" />
+                        </template>
+                        <a-card-meta
+                            :title="`${trip.trip.route_id.departure_city} - ${trip.trip.route_id.arrival_city}`">
+                            <template #description>
+                                <p>Ngày khởi hành: {{ formatDate(trip.trip.departure_time) }}</p>
+                                <p>Giờ khởi hành: {{ formatTime(trip.trip.departure_time) }}</p>
+                                <p>Số ghế trống: {{ trip.availableSeats }}</p>
+                                <p>Giá vé: {{ formatPrice(trip.price) }} VND</p>
+                            </template>
+                        </a-card-meta>
+                        <a-button @click="selectTrip(trip)" :disabled="trip.availableSeats === 0" type="primary" block
+                            style="margin-top: 16px;">
+                            {{ trip.availableSeats > 0 ? 'Chọn chuyến này' : 'Hết vé' }}
+                        </a-button>
+                    </a-card>
+                </a-col>
+            </a-row>
+        </a-spin>
     </div>
 </template>
 
 <script>
-import TuyenDuongService from '@/services/TuyenDuongService';
-import { Button, Card, Col, Descriptions, Empty, Row, Tag } from 'ant-design-vue';
+import VeService from '@/services/VeService';
+import { Alert, Button, Card, Col, Empty, Row, Spin } from 'ant-design-vue';
 
 export default {
-    name: 'BoLocVe',
+    name: 'SearchTicket',
     components: {
+        ACard: Card,
+        ASpin: Spin,
+        AEmpty: Empty,
         ARow: Row,
         ACol: Col,
-        ACard: Card,
-        ADescriptions: Descriptions,
-        ADescriptionsItem: Descriptions.Item,
-        ATag: Tag,
         AButton: Button,
-        AEmpty: Empty
-    },
-    props: {
-        searchData: {
-            type: Object,
-            default: () => ({
-                departure_city: '',
-                arrival_city: '',
-                departureDate: ''
-            })
-        }
+        AAlert: Alert,
+        ACardMeta: Card.Meta,
     },
     data() {
         return {
-            TuyenDuongs: [],
-            hasSearched: false,
-            allTrips: []
+            trips: [],
+            loading: true,
+            error: null
         };
     },
-    computed: {
-        filteredTrips() {
-            if (!this.hasSearched) return [];
-            return this.allTrips.filter(trip =>
-                trip.departure_city === this.searchData.departure_city &&
-                trip.arrival_city === this.searchData.arrival_city &&
-                trip.departureDate === this.searchData.departureDate
-            );
-        }
-    },
     methods: {
-        async fetchTuyenDuongs() {
+        async searchTrips() {
+            this.loading = true;
+            this.error = null;
             try {
-                this.TuyenDuongs = await TuyenDuongService.getAllTuyenDuongs();
-            } catch (error) {
-                console.error('Lỗi tìm nạp tuyến đường:', error);
-            }
-        },
-        async fetchAllTrips() {
-            try {
-                // Assume you have a service to fetch all trips
-                this.allTrips = await TuyenDuongService.getAllTrips();
-            } catch (error) {
-                console.error('Lỗi tìm nạp chuyến xe:', error);
+                const { departure_city, arrival_city, departure_date } = this.$route.query;
+                const response = await VeService.searchTickets(departure_city, arrival_city, departure_date);
+                if (response.success) {
+                    this.trips = response.data;
+                } else {
+                    this.error = response.message || 'Đã xảy ra lỗi khi tìm kiếm chuyến xe.';
+                }
+            } catch (err) {
+                console.error('Error fetching trips:', err);
+                this.error = err.message || 'Đã xảy ra lỗi khi tìm kiếm chuyến xe. Vui lòng thử lại sau.';
+            } finally {
+                this.loading = false;
             }
         },
         selectTrip(trip) {
-            console.log('Chuyến xe được chọn:', trip);
-            // Implement logic to handle trip selection
+            this.$router.push({
+                name: 'BookTicket',
+                params: { id: trip.trip._id },
+                query: { availableSeats: trip.availableSeats, price: trip.price }
+            });
+        },
+        formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('vi-VN');
+        },
+        formatTime(dateString) {
+            return new Date(dateString).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        },
+        formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN').format(price);
         }
+    },
+    created() {
+        this.searchTrips();
     },
     watch: {
-        searchData: {
-            immediate: true,
-            handler(newVal) {
-                if (newVal.departure_city && newVal.arrival_city && newVal.departureDate) {
-                    this.hasSearched = true;
-                } else {
-                    this.hasSearched = false;
-                }
-            }
+        '$route.query': {
+            handler: 'searchTrips',
+            deep: true
         }
-    },
-    mounted() {
-        this.fetchTuyenDuongs();
-        this.fetchAllTrips();
     }
 };
 </script>
 
 <style scoped>
-.booking-container {
+.search-ticket {
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
-}
-
-.search-results {
-    margin-top: 20px;
-}
-
-.trip-card {
-    margin-bottom: 16px;
-}
-
-.ant-card-head-title {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.ant-descriptions-item-label {
-    font-weight: bold;
 }
 </style>

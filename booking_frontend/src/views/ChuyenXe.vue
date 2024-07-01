@@ -45,6 +45,14 @@
                         </a-select-option>
                     </a-select>
                 </a-form-item>
+                <a-form-item name="chuyenXe_name" label="Tên chuyến xe">
+                    <a-select v-model:value="newChuyenXe.chuyenXe_name" placeholder="Chọn tên chuyến xe">
+                        <a-select-option v-for="tuyenDuong in TuyenDuongs" :key="tuyenDuong._id"
+                            :value="tuyenDuong.departure_city + ' - ' + tuyenDuong.arrival_city">
+                            {{ tuyenDuong.departure_city }} - {{ tuyenDuong.arrival_city }}
+                        </a-select-option>
+                    </a-select>
+                </a-form-item>
                 <a-form-item name="route_id" label="Id tuyến đường"
                     :rules="{ required: true, message: 'Vui lòng chọn Id tuyến đường!' }">
                     <a-select v-model:value="newChuyenXe.route_id" placeholder="Chọn Id tuyến đường">
@@ -82,6 +90,15 @@
                         </a-select-option>
                     </a-select>
                 </a-form-item>
+                <a-form-item name="chuyenXe_name" label="Tên chuyến xe"
+                    :rules="{ required: true, message: 'Vui lòng nhập tên chuyến xe!' }">
+                    <a-select v-model:value="newChuyenXe.chuyenXe_name" placeholder="Chọn tên chuyến xe">
+                        <a-select-option v-for="tuyenDuong in TuyenDuongs" :key="tuyenDuong._id"
+                            :value="tuyenDuong.departure_city + ' - ' + tuyenDuong.arrival_city">
+                            {{ tuyenDuong.departure_city }} - {{ tuyenDuong.arrival_city }}
+                        </a-select-option>
+                    </a-select>
+                </a-form-item>
                 <a-form-item label="Id tuyến đường"
                     :rules="{ required: true, message: 'Vui lòng chọn Id tuyến đường!' }">
                     <a-select v-model="currentChuyenXe.route_id" placeholder="Chọn Id tuyến đường">
@@ -114,7 +131,7 @@
 import ChuyenXeService from '@/services/ChuyenXeService';
 import NhaXeService from '@/services/NhaXeService';
 import TuyenDuongService from '@/services/TuyenDuongService';
-import { message, notification } from 'ant-design-vue';
+import { notification } from 'ant-design-vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -123,6 +140,7 @@ export default defineComponent({
         return {
             columns: [
                 { title: 'ID Nhà xe', dataIndex: 'bus_id', key: 'bus_id' },
+                { title: 'Tên chuyến xe', dataIndex: 'chuyenXe_name', key: 'chuyenXe_name' },
                 { title: 'ID Tuyến đường', dataIndex: 'route_id', key: 'route_id' },
                 { title: 'Thời gian xuất phát', dataIndex: 'departure_time', key: 'departure_time' },
                 { title: 'Thời gian đến', dataIndex: 'arrival_time', key: 'arrival_time' },
@@ -136,6 +154,7 @@ export default defineComponent({
             isEditModalVisible: false,
             newChuyenXe: {
                 bus_id: '',
+                chuyenXe_name: '',
                 route_id: '',
                 departure_time: '',
                 arrival_time: '',
@@ -150,6 +169,7 @@ export default defineComponent({
                 this.ChuyenXes = await ChuyenXeService.getAllChuyenXes();
             } catch (error) {
                 console.error('Error fetching chuyen xe:', error);
+                this.showNotification('error', 'Đã xảy ra lỗi khi tải danh sách chuyến xe');
             }
         },
         async fetchNhaXes() {
@@ -157,6 +177,7 @@ export default defineComponent({
                 this.NhaXes = await NhaXeService.getAllNhaXes();
             } catch (error) {
                 console.error('Error fetching nha xe:', error);
+                this.showNotification('error', 'Đã xảy ra lỗi khi tải danh sách nhà xe');
             }
         },
         async fetchTuyenDuongs() {
@@ -164,6 +185,7 @@ export default defineComponent({
                 this.TuyenDuongs = await TuyenDuongService.getAllTuyenDuongs();
             } catch (error) {
                 console.error('Error fetching tuyen duong:', error);
+                this.showNotification('error', 'Đã xảy ra lỗi khi tải danh sách tuyến đường');
             }
         },
         showAddModal() {
@@ -174,7 +196,6 @@ export default defineComponent({
                 await this.$refs.addFormRef.validate();
                 const token = await localStorage.getItem("accessToken");
 
-                // Create FormData object
                 const formData = new FormData();
                 Object.keys(this.newChuyenXe).forEach(key => {
                     if (key === 'image' && this.newChuyenXe[key] instanceof File) {
@@ -187,10 +208,10 @@ export default defineComponent({
                 await ChuyenXeService.createChuyenXe(formData, token);
                 await this.fetchChuyenXes();
                 this.isAddModalVisible = false;
-                message.success('Chuyến xe được thêm thành công');
+                this.showNotification('success', 'Chuyến xe được thêm thành công');
             } catch (error) {
                 console.error('Error adding chuyen xe:', error);
-                message.error('Đã xảy ra lỗi khi thêm chuyến xe');
+                this.showNotification('error', 'Đã xảy ra lỗi khi thêm chuyến xe');
             }
         },
         showEditModal(record) {
@@ -202,7 +223,6 @@ export default defineComponent({
                 await this.$refs.editFormRef.validate();
                 const token = await localStorage.getItem("accessToken");
 
-                // Create FormData object
                 const formData = new FormData();
                 Object.keys(this.currentChuyenXe).forEach(key => {
                     if (key === 'image' && this.currentChuyenXe[key] instanceof File) {
@@ -215,21 +235,25 @@ export default defineComponent({
                 await ChuyenXeService.updateChuyenXe(this.currentChuyenXe._id, formData, token);
                 await this.fetchChuyenXes();
                 this.isEditModalVisible = false;
-                message.success('Chuyến xe được cập nhật thành công');
+                this.showNotification('success', 'Chuyến xe được cập nhật thành công');
             } catch (error) {
                 console.error('Error updating chuyen xe:', error);
-                message.error('Đã xảy ra lỗi khi cập nhật chuyến xe');
+                this.showNotification('error', 'Đã xảy ra lỗi khi cập nhật chuyến xe');
             }
         },
         async deleteRecord(id) {
-            try {
-                await ChuyenXeService.deleteChuyenXe(id);
-                await this.fetchChuyenXes();
-                message.success('Chuyến xe được xóa thành công');
-            } catch (error) {
-                console.error('Error deleting chuyen xe:', error);
-                message.error('Đã xảy ra lỗi khi xóa chuyến xe');
+            if (confirm('Bạn có chắc muốn xóa tuyến đường này không?')) {
+                try {
+                    const token = await localStorage.getItem("accessToken");
+                    await ChuyenXeService.deleteChuyenXe(id, token);
+                    await this.fetchChuyenXes();
+                    this.showNotification('success', 'Chuyến xe được xóa thành công');
+                } catch (error) {
+                    console.error('Error deleting chuyen xe:', error);
+                    this.showNotification('error', 'Đã xảy ra lỗi khi xóa chuyến xe');
+                }
             }
+
         },
         handleAddCancel() {
             this.$refs.addFormRef.resetFields();
@@ -244,14 +268,13 @@ export default defineComponent({
             const isLt2M = file.size / 1024 / 1024 < 2;
 
             if (!isImage) {
-                notification.error({ message: 'Bạn chỉ có thể tải lên các file JPG, JPEG, PNG, GIF hoặc WEBP!' });
+                this.showNotification('error', 'Bạn chỉ có thể tải lên các file JPG, JPEG, PNG, GIF hoặc WEBP!');
             } else if (!isLt2M) {
-                notification.error({ message: 'Kích thước file phải nhỏ hơn 2MB!' });
+                this.showNotification('error', 'Kích thước file phải nhỏ hơn 2MB!');
             }
 
             return isImage && isLt2M;
         },
-
         handleAddImageChange(info) {
             if (info.file.status === 'done') {
                 this.newChuyenXe.image = info.file.originFileObj;
@@ -266,6 +289,12 @@ export default defineComponent({
             if (info.file.status === 'done') {
                 this.currentChuyenXe.image = info.file.originFileObj;
             }
+        },
+        showNotification(type, message) {
+            notification[type]({
+                message: 'Thông báo',
+                description: message,
+            });
         },
     },
     mounted() {

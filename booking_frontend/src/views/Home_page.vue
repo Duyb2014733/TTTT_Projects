@@ -39,7 +39,6 @@
 
 <script>
 import KhachHangService from "@/services/KhachHangService";
-import Card from 'primevue/card';
 
 export default {
     components: {

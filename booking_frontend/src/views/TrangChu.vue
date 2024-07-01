@@ -1,37 +1,56 @@
 <template>
     <div class="container-fluid">
         <SearchForm @search="handleSearch" />
-        <!-- <BoLocVe :searchData="searchData" /> -->
+        <router-view :searchParams="searchParams" />
     </div>
 </template>
 
 <script>
-// import BoLocVe from '@/components/BoLocVe.vue';
 import SearchForm from '@/components/SearchForm.vue';
 
 export default {
     name: 'App',
     components: {
         SearchForm,
-        // BoLocVe
     },
     data() {
         return {
-            searchData: {
+            searchParams: {
                 departure_city: '',
                 arrival_city: '',
-                departureDate: ''
+                departure_date: ''  // Changed from departureDate for consistency
             }
         }
     },
     methods: {
         handleSearch(data) {
-            this.searchData = data;
-            this.$router.push({
-                name: 'SearchTicket',
-                params: { searchData: data }
-            });
+            // Validate incoming data
+            if (!data.departure_city || !data.arrival_city || !data.departure_date) {
+                console.error('Invalid search data', data);
+                return;
+            }
+
+            this.searchParams = { ...data };
+
+            // Use try-catch for error handling during navigation
+            try {
+                this.$router.push({
+                    name: 'SearchTicket',
+                    query: { ...this.searchParams }
+                });
+            } catch (error) {
+                console.error('Navigation error:', error);
+                // Handle navigation error (e.g., show an error message to the user)
+            }
         }
     }
 }
 </script>
+
+<style scoped>
+.container-fluid {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+</style>

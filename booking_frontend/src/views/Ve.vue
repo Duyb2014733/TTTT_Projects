@@ -18,6 +18,9 @@
                         <i class="fa-solid fa-trash"></i>
                     </a-button>
                 </template>
+                <template v-else-if="column.key === 'trip_id'">
+                    {{ record.trip_id.chuyenXe_name }}
+                </template>
                 <template v-else>
                     {{ record[column.dataIndex] }}
                 </template>
@@ -27,19 +30,11 @@
         <!-- Add Ve Modal -->
         <a-modal title="Thêm Vé" v-model:open="isAddModalVisible" @cancel="handleAddCancel" @ok="addVe">
             <a-form ref="addFormRef" :model="newVe" layout="vertical" name="add_form">
-                <a-form-item name="customer_id" label="ID Khách Hàng"
-                    :rules="[{ required: true, message: 'Vui lòng nhập ID khách hàng!' }]">
-                    <a-select v-model:value="newVe.customer_id" placeholder="Chọn ID Khách Hàng">
-                        <a-select-option v-for="khachHang in khachHangs" :key="khachHang._id" :value="khachHang._id">
-                            {{ khachHang.name }}
-                        </a-select-option>
-                    </a-select>
-                </a-form-item>
                 <a-form-item name="trip_id" label="ID Chuyến Xe"
                     :rules="[{ required: true, message: 'Vui lòng nhập ID chuyến xe!' }]">
                     <a-select v-model:value="newVe.trip_id" placeholder="Chọn ID Chuyến Xe">
                         <a-select-option v-for="chuyenXe in chuyenXes" :key="chuyenXe._id" :value="chuyenXe._id">
-                            {{ chuyenXe.name }}
+                            {{ chuyenXe.route_id.departure_city }} - {{ chuyenXe.route_id.arrival_city }}
                         </a-select-option>
                     </a-select>
                 </a-form-item>
@@ -47,16 +42,8 @@
                     :rules="[{ required: true, message: 'Vui lòng nhập số ghế!' }]">
                     <a-input v-model:value="newVe.seat_number" placeholder="Số Ghế" />
                 </a-form-item>
-                <a-form-item name="purchase_date" label="Ngày Mua"
-                    :rules="[{ required: true, message: 'Vui lòng nhập ngày mua!' }]">
-                    <a-date-picker v-model:value="newVe.purchase_date" show-time placeholder="Chọn ngày giờ" />
-                </a-form-item>
                 <a-form-item name="price" label="Giá" :rules="[{ required: true, message: 'Vui lòng nhập giá!' }]">
                     <a-input v-model:value="newVe.price" placeholder="Giá" />
-                </a-form-item>
-                <a-form-item name="payment_id" label="ID Thanh Toán"
-                    :rules="[{ required: true, message: 'Vui lòng nhập ID thanh toán!' }]">
-                    <a-input v-model:value="newVe.payment_id" placeholder="ID Thanh Toán" />
                 </a-form-item>
             </a-form>
         </a-modal>
@@ -64,19 +51,12 @@
         <!-- Edit Ve Modal -->
         <a-modal title="Chỉnh Sửa Vé" v-model:open="isEditModalVisible" @cancel="handleEditCancel" @ok="editVe">
             <a-form ref="editFormRef" :model="currentVe" layout="vertical" name="edit_form">
-                <a-form-item name="customer_id" label="ID Khách Hàng"
-                    :rules="[{ required: true, message: 'Vui lòng nhập ID khách hàng!' }]">
-                    <a-select v-model:value="currentVe.customer_id" placeholder="Chọn ID Khách Hàng">
-                        <a-select-option v-for="khachHang in khachHangs" :key="khachHang._id" :value="khachHang._id">
-                            {{ khachHang.name }}
-                        </a-select-option>
-                    </a-select>
-                </a-form-item>
                 <a-form-item name="trip_id" label="ID Chuyến Xe"
                     :rules="[{ required: true, message: 'Vui lòng nhập ID chuyến xe!' }]">
                     <a-select v-model:value="currentVe.trip_id" placeholder="Chọn ID Chuyến Xe">
                         <a-select-option v-for="chuyenXe in chuyenXes" :key="chuyenXe._id" :value="chuyenXe._id">
-                            {{ chuyenXe.name }}
+                            {{ chuyenXe.trip_id.route_id.departure_city }} - {{ chuyenXe.trip_id.route_id.arrival_city
+                            }}
                         </a-select-option>
                     </a-select>
                 </a-form-item>
@@ -84,48 +64,33 @@
                     :rules="[{ required: true, message: 'Vui lòng nhập số ghế!' }]">
                     <a-input v-model:value="currentVe.seat_number" placeholder="Số Ghế" />
                 </a-form-item>
-                <a-form-item name="purchase_date" label="Ngày Mua"
-                    :rules="[{ required: true, message: 'Vui lòng nhập ngày mua!' }]">
-                    <a-date-picker v-model="currentVe.purchase_date" show-time placeholder="Chọn ngày giờ" />
-                </a-form-item>
                 <a-form-item name="price" label="Giá" :rules="[{ required: true, message: 'Vui lòng nhập giá!' }]">
                     <a-input v-model:value="currentVe.price" placeholder="Giá" />
-                </a-form-item>
-                <a-form-item name="payment_id" label="ID Thanh Toán"
-                    :rules="[{ required: true, message: 'Vui lòng nhập ID thanh toán!' }]">
-                    <a-input v-model:value="currentVe.payment_id" placeholder="ID Thanh Toán" />
                 </a-form-item>
             </a-form>
         </a-modal>
     </div>
 </template>
-
 <script>
 import ChuyenXeService from "@/services/ChuyenXeService";
-import KhachHangService from "@/services/KhachHangService";
 import VeService from "@/services/VeService";
 import { notification } from 'ant-design-vue';
-import { format, parseISO } from 'date-fns';
 
 export default {
     data() {
         return {
             columns: [
-                { title: 'ID Khách Hàng', dataIndex: 'customer_id', key: 'customer_id' },
                 { title: 'ID Chuyến Xe', dataIndex: 'trip_id', key: 'trip_id' },
                 { title: 'Số Ghế', dataIndex: 'seat_number', key: 'seat_number' },
-                { title: 'Ngày Mua', dataIndex: 'purchase_date', key: 'purchase_date' },
                 { title: 'Giá', dataIndex: 'price', key: 'price' },
-                { title: 'ID Thanh Toán', dataIndex: 'payment_id', key: 'payment_id' },
                 { title: 'Hành Động', key: 'action' },
             ],
             ves: [],
-            khachHangs: [],
             chuyenXes: [],
             isAddModalVisible: false,
             isEditModalVisible: false,
-            newVe: { customer_id: '', trip_id: '', seat_number: '', purchase_date: null, price: '', payment_id: '' },
-            currentVe: { customer_id: '', trip_id: '', seat_number: '', purchase_date: null, price: '', payment_id: '' },
+            newVe: { trip_id: '', seat_number: '', price: '' },
+            currentVe: { trip_id: '', seat_number: '', price: '' },
         };
     },
     methods: {
@@ -134,13 +99,6 @@ export default {
                 this.ves = await VeService.getAllVes();
             } catch (error) {
                 console.error('Error fetching Ves:', error);
-            }
-        },
-        async fetchKhachHangs() {
-            try {
-                this.khachHangs = await KhachHangService.getAllKhachHangs();
-            } catch (error) {
-                console.error('Error fetching customers:', error);
             }
         },
         async fetchChuyenXes() {
@@ -155,8 +113,9 @@ export default {
         },
         async addVe() {
             try {
+                const token = await localStorage.getItem('accessToken');
                 await this.$refs.addFormRef.validate();
-                await VeService.createVe(this.newVe);
+                await VeService.createVe(this.newVe, token);
                 await this.fetchVes();
                 this.isAddModalVisible = false;
                 this.resetNewVe();
@@ -170,17 +129,17 @@ export default {
             this.resetNewVe();
         },
         resetNewVe() {
-            this.newVe = { customer_id: '', trip_id: '', seat_number: '', purchase_date: null, price: '', payment_id: '' };
+            this.newVe = { trip_id: '', seat_number: '', price: '' };
         },
         showEditModal(ve) {
-            this.currentVe = { ...ve, purchase_date: parseISO(ve.purchase_date) };
+            this.currentVe = { ...ve };
             this.isEditModalVisible = true;
         },
         async editVe() {
             try {
+                const token = await localStorage.getItem('accessToken');
                 await this.$refs.editFormRef.validate();
-                this.currentVe.purchase_date = format(this.currentVe.purchase_date, "yyyy-MM-dd'T'HH:mm:ssxxx");
-                await VeService.updateVe(this.currentVe._id, this.currentVe);
+                await VeService.updateVe(this.currentVe._id, this.currentVe, token);
                 await this.fetchVes();
                 this.isEditModalVisible = false;
                 this.showNotification('success', 'Ve updated successfully');
@@ -194,7 +153,8 @@ export default {
         async deleteRecord(veId) {
             if (confirm('Bạn có chắc muốn xóa vé này không?')) {
                 try {
-                    await VeService.deleteVe(veId);
+                    const token = await localStorage.getItem('accessToken');
+                    await VeService.deleteVe(veId, token);
                     await this.fetchVes();
                     this.showNotification('success', 'Ve deleted successfully');
                 } catch (error) {
@@ -211,7 +171,6 @@ export default {
     },
     async mounted() {
         await this.fetchVes();
-        await this.fetchKhachHangs();
         await this.fetchChuyenXes();
     },
 };

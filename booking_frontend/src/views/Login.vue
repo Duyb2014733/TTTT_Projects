@@ -48,7 +48,7 @@ export default {
                     setTimeout(() => {
                         window.location.reload();
                     }, 2000);
-                    this.$router.push({ name: 'admin' });
+                    this.$router.push({ name: 'Admin' });
                 } else {
                     setTimeout(() => {
                         window.location.reload();

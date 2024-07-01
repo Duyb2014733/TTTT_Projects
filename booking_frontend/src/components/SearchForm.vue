@@ -96,7 +96,7 @@ export default {
             this.$emit('search', {
                 departure_city: this.departureLocation,
                 arrival_city: this.destination,
-                departureDate: formattedDate
+                departure_date: formattedDate
             });
         }
     },
