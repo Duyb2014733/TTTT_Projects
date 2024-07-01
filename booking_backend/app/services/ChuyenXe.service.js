@@ -17,8 +17,8 @@ class ChuyenXeService {
   async getChuyenXeById(chuyenXeId) {
     try {
       return await ChuyenXe.findById(chuyenXeId)
-        .populate("bus_id")
-        .populate("route_id");
+        .populate("xe_id")
+        .populate("tuyenduong_id");
     } catch (error) {
       throw error;
     }
@@ -27,7 +27,7 @@ class ChuyenXeService {
   // Lấy danh sách tất cả các chuyến xe
   async getAllChuyenXes() {
     try {
-      return await ChuyenXe.find().populate("bus_id").populate("route_id");
+      return await ChuyenXe.find().populate("xe_id").populate("tuyenduong_id");
     } catch (error) {
       throw error;
     }
@@ -39,8 +39,8 @@ class ChuyenXeService {
       return await ChuyenXe.findByIdAndUpdate(chuyenXeId, chuyenXeData, {
         new: true,
       })
-        .populate("bus_id")
-        .populate("route_id");
+        .populate("xe_id")
+        .populate("tuyenduong_id");
     } catch (error) {
       throw error;
     }
@@ -83,12 +83,12 @@ class ChuyenXeService {
       endOfDay.setHours(23, 59, 59, 999);
 
       const trips = await ChuyenXe.find({
-        route_id: route._id,
+        tuyenduong_id: route._id,
         departure_time: {
           $gte: startOfDay,
           $lte: endOfDay,
         },
-      }).populate("bus_id");
+      }).populate("xe_id");
 
       if (!trips || trips.length === 0) {
         throw new Error(

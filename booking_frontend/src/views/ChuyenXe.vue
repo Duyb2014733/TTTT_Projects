@@ -19,14 +19,17 @@
                         <i class="fa-solid fa-trash"></i>
                     </a-button>
                 </template>
-                <template v-else-if="column.key === 'bus_id'">
-                    {{ record.bus_id.company_name }}
+                <template v-else-if="column.key === 'xe_id'">
+                    {{ record.xe_id.bus_number }}
                 </template>
-                <template v-else-if="column.key === 'route_id'">
-                    {{ record.route_id.departure_city }} - {{ record.route_id.arrival_city }}
+                <template v-else-if="column.key === 'tuyenduong_id'">
+                    {{ record.tuyenduong_id.departure_city }} - {{ record.tuyenduong_id.arrival_city }}
                 </template>
                 <template v-else-if="column.key === 'image'">
                     <img :src="record.image" alt="Chuyến Xe Image" style="max-width: 100px;" />
+                </template>
+                <template v-else-if="column.key === 'price'">
+                    {{ record.price }}
                 </template>
                 <template v-else>
                     {{ record[column.dataIndex] }}
@@ -37,11 +40,10 @@
         <!-- Modal Thêm Chuyen Xe -->
         <a-modal title="Thêm chuyến xe" v-model:visible="isAddModalVisible" @cancel="handleAddCancel" @ok="addChuyenXe">
             <a-form ref="addFormRef" :model="newChuyenXe" layout="vertical">
-                <a-form-item name="bus_id" label="Id nhà xe"
-                    :rules="{ required: true, message: 'Vui lòng chọn Id nhà xe!' }">
-                    <a-select v-model:value="newChuyenXe.bus_id" placeholder="Chọn Id nhà xe">
-                        <a-select-option v-for="nhaXe in NhaXes" :key="nhaXe._id" :value="nhaXe._id">
-                            {{ nhaXe.company_name }}
+                <a-form-item name="xe_id" label="Id xe" :rules="{ required: true, message: 'Vui lòng chọn Id xe!' }">
+                    <a-select v-model:value="newChuyenXe.xe_id" placeholder="Chọn Id xe">
+                        <a-select-option v-for="Xe in Xes" :key="Xe._id" :value="Xe._id">
+                            {{ Xe.bus_number }}
                         </a-select-option>
                     </a-select>
                 </a-form-item>
@@ -53,9 +55,9 @@
                         </a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item name="route_id" label="Id tuyến đường"
+                <a-form-item name="tuyenduong_id" label="Id tuyến đường"
                     :rules="{ required: true, message: 'Vui lòng chọn Id tuyến đường!' }">
-                    <a-select v-model:value="newChuyenXe.route_id" placeholder="Chọn Id tuyến đường">
+                    <a-select v-model:value="newChuyenXe.tuyenduong_id" placeholder="Chọn Id tuyến đường">
                         <a-select-option v-for="tuyenDuong in TuyenDuongs" :key="tuyenDuong._id"
                             :value="tuyenDuong._id">
                             {{ tuyenDuong.departure_city }} - {{ tuyenDuong.arrival_city }}
@@ -73,8 +75,9 @@
                         :customRequest="customRequest">
                         <a-button icon="upload">Chọn file</a-button>
                     </a-upload>
-                    <!-- <img v-if="newChuyenXe.image" :src="newChuyenXe.image" alt="Preview"
-                        style="max-width: 200px; margin-top: 10px;" /> -->
+                </a-form-item>
+                <a-form-item name="price" label="Giá vé">
+                    <a-input v-model:value="newChuyenXe.price" placeholder="Nhập giá vé" />
                 </a-form-item>
             </a-form>
         </a-modal>
@@ -83,10 +86,10 @@
         <a-modal title="Chỉnh sửa chuyến xe" v-model:visible="isEditModalVisible" @cancel="handleEditCancel"
             @ok="editChuyenXe">
             <a-form ref="editFormRef" :model="currentChuyenXe" layout="vertical">
-                <a-form-item label="Id nhà xe" :rules="{ required: true, message: 'Vui lòng chọn Id nhà xe!' }">
-                    <a-select v-model="currentChuyenXe.bus_id" placeholder="Chọn Id nhà xe">
-                        <a-select-option v-for="nhaXe in NhaXes" :key="nhaXe._id" :value="nhaXe._id">
-                            {{ nhaXe.company_name }}
+                <a-form-item name="xe_id" label="Id xe" :rules="{ required: true, message: 'Vui lòng chọn Id xe!' }">
+                    <a-select v-model:value="currentChuyenXe.xe_id" placeholder="Chọn Id xe">
+                        <a-select-option v-for="Xe in Xes" :key="Xe._id" :value="Xe._id">
+                            {{ Xe.bus_number }}
                         </a-select-option>
                     </a-select>
                 </a-form-item>
@@ -101,7 +104,7 @@
                 </a-form-item>
                 <a-form-item label="Id tuyến đường"
                     :rules="{ required: true, message: 'Vui lòng chọn Id tuyến đường!' }">
-                    <a-select v-model="currentChuyenXe.route_id" placeholder="Chọn Id tuyến đường">
+                    <a-select v-model="currentChuyenXe.tuyenduong_id" placeholder="Chọn Id tuyến đường">
                         <a-select-option v-for="tuyenDuong in TuyenDuongs" :key="tuyenDuong._id"
                             :value="tuyenDuong._id">
                             {{ tuyenDuong.departure_city }} - {{ tuyenDuong.arrival_city }}
@@ -122,6 +125,9 @@
                         </a-button>
                     </a-upload>
                 </a-form-item>
+                <a-form-item label="Giá vé">
+                    <a-input v-model:value="currentChuyenXe.price" placeholder="Nhập giá vé" />
+                </a-form-item>
             </a-form>
         </a-modal>
     </div>
@@ -129,8 +135,8 @@
 
 <script>
 import ChuyenXeService from '@/services/ChuyenXeService';
-import NhaXeService from '@/services/NhaXeService';
 import TuyenDuongService from '@/services/TuyenDuongService';
+import XeService from '@/services/XeService';
 import { notification } from 'ant-design-vue';
 import { defineComponent } from 'vue';
 
@@ -139,26 +145,28 @@ export default defineComponent({
     data() {
         return {
             columns: [
-                { title: 'ID Nhà xe', dataIndex: 'bus_id', key: 'bus_id' },
+                { title: 'ID Xe', dataIndex: 'xe_id', key: 'xe_id' },
                 { title: 'Tên chuyến xe', dataIndex: 'chuyenXe_name', key: 'chuyenXe_name' },
-                { title: 'ID Tuyến đường', dataIndex: 'route_id', key: 'route_id' },
+                { title: 'ID Tuyến đường', dataIndex: 'tuyenduong_id', key: 'tuyenduong_id' },
                 { title: 'Thời gian xuất phát', dataIndex: 'departure_time', key: 'departure_time' },
                 { title: 'Thời gian đến', dataIndex: 'arrival_time', key: 'arrival_time' },
                 { title: 'Hình ảnh', dataIndex: 'image', key: 'image' },
+                { title: 'Giá vé', dataIndex: 'price', key: 'price' },
                 { title: 'Hành Động', key: 'action' },
             ],
             ChuyenXes: [],
-            NhaXes: [],
+            Xes: [],
             TuyenDuongs: [],
             isAddModalVisible: false,
             isEditModalVisible: false,
             newChuyenXe: {
-                bus_id: '',
+                xe_id: '',
                 chuyenXe_name: '',
-                route_id: '',
+                tuyenduong_id: '',
                 departure_time: '',
                 arrival_time: '',
                 image: null,
+                price: '',
             },
             currentChuyenXe: null,
         };
@@ -172,12 +180,12 @@ export default defineComponent({
                 this.showNotification('error', 'Đã xảy ra lỗi khi tải danh sách chuyến xe');
             }
         },
-        async fetchNhaXes() {
+        async fetchXes() {
             try {
-                this.NhaXes = await NhaXeService.getAllNhaXes();
+                this.Xes = await XeService.getAllXes();
             } catch (error) {
-                console.error('Error fetching nha xe:', error);
-                this.showNotification('error', 'Đã xảy ra lỗi khi tải danh sách nhà xe');
+                console.error('Error fetching xe:', error);
+                this.showNotification('error', 'Đã xảy ra lỗi khi tải danh sách xe');
             }
         },
         async fetchTuyenDuongs() {
@@ -253,7 +261,6 @@ export default defineComponent({
                     this.showNotification('error', 'Đã xảy ra lỗi khi xóa chuyến xe');
                 }
             }
-
         },
         handleAddCancel() {
             this.$refs.addFormRef.resetFields();
@@ -299,7 +306,7 @@ export default defineComponent({
     },
     mounted() {
         this.fetchChuyenXes();
-        this.fetchNhaXes();
+        this.fetchXes();
         this.fetchTuyenDuongs();
     },
 });
