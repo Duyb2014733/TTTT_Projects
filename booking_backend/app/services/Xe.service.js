@@ -1,4 +1,5 @@
 const Xe = require("../models/Xe.model");
+const ViTriGhe = require("../models/ViTriGhe.model");
 
 class XeService {
   async getAllXe() {
@@ -19,6 +20,16 @@ class XeService {
 
   async deleteXe(id) {
     return await Xe.findByIdAndDelete(id);
+  }
+
+  async updateViTriGheCount(xeId) {
+    const count = await ViTriGhe.countDocuments({ vitrighe_vehicle: xeId });
+    const xe = await Xe.findByIdAndUpdate(
+      xeId,
+      { bus_seats: count },
+      { new: true }
+    );
+    return xe;
   }
 }
 

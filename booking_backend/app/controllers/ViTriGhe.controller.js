@@ -1,6 +1,8 @@
 const ViTriGheService = require("../services/ViTriGhe.service");
+const XeService = require("../services/Xe.service");
 
 const viTriGheService = new ViTriGheService();
+const xeService = new XeService();
 
 // Lấy danh sách tất cả vị trí ghế
 exports.getAllViTriGhe = async (req, res) => {
@@ -33,6 +35,7 @@ exports.createViTriGhe = async (req, res) => {
 
   try {
     const newViTriGhe = await viTriGheService.createViTriGhe(viTriGheData);
+    await xeService.updateViTriGheCount(newViTriGhe.vitrighe_vehicle);
     res.status(201).json(newViTriGhe);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -66,6 +69,7 @@ exports.deleteViTriGhe = async (req, res) => {
 
   try {
     const deletedViTriGhe = await viTriGheService.deleteViTriGhe(id);
+    await xeService.updateViTriGheCount(deletedViTriGhe.vitrighe_vehicle);
     if (!deletedViTriGhe) {
       return res
         .status(404)
