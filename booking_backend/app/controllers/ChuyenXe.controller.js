@@ -15,7 +15,6 @@ exports.createChuyenXe = async (req, res, next) => {
         ? `/api/chuyenxe/uploads/${req.file.filename}`
         : null;
       const chuyenXeData = { ...req.body, image: imagePath };
-      console.log("ChuyenXe data:", chuyenXeData);
       const newChuyenXe = await chuyenXeService.createChuyenXe(chuyenXeData);
       res.status(201).json(newChuyenXe);
     } catch (error) {
@@ -78,14 +77,5 @@ exports.deleteAllChuyenXes = async (req, res, next) => {
     res.status(204).send();
   } catch (error) {
     next(new ApiError(500, `Error deleting all ChuyenXes: ${error.message}`));
-  }
-};
-
-exports.searchTrips = async (req, res, next) => {
-  try {
-    const trips = await chuyenXeService.searchTrips(req.body);
-    res.json(trips);
-  } catch (error) {
-    next(new ApiError(500, `Error searching trips: ${error.message}`));
   }
 };
