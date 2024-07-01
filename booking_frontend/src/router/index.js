@@ -41,12 +41,17 @@ const routes = [
     component: () => import("@/views/ChuyenXe.vue"),
   },
   {
+    path: "/xe",
+    name: "Xe",
+    component: () => import("@/views/Xe.vue"),
+  },
+  {
     path: "/thanhtoan",
     name: "ThanhToan",
     component: () => import("@/views/ThanhToan.vue"),
   },
   {
-    path: "/srarchticket",
+    path: "/ve/search-tickets",
     name: "SearchTicket",
     component: () => import("@/views/SearchTicket.vue"),
   },
@@ -62,7 +67,7 @@ const routes = [
   },
   {
     path: "/admin",
-    name: "admin",
+    name: "Admin",
     component: () => import("@/views/Home_page.vue"),
   },
 ];
