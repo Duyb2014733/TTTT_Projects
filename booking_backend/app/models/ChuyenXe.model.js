@@ -6,6 +6,10 @@ const ChuyenXeSchema = new mongoose.Schema({
     ref: "NhaXe",
     required: true,
   },
+  chuyenXe_name: {
+    type: String,
+    required: true,
+  },
   route_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "TuyenDuong",
