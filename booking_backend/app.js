@@ -7,6 +7,7 @@ const XeRouter = require("./app/routes/Xe.route");
 const ThanhToanRouter = require("./app/routes/ThanhToan.route");
 const TuyenDuongRouter = require("./app/routes/TuyenDuong.route");
 const VeRouter = require("./app/routes/Ve.route");
+const ViTriGheRouter = require("./app/routes/ViTriGhe.route");
 const ApiError = require("./app/api-error");
 require("dotenv").config();
 const app = express();
@@ -26,6 +27,7 @@ app.use("/api/thanhtoan/", ThanhToanRouter);
 app.use("/api/tuyenduong/", TuyenDuongRouter);
 app.use("/api/ve/", VeRouter);
 app.use("/api/xe/", XeRouter);
+app.use("/api/vitrighe/", ViTriGheRouter);
 app.use("/api/chuyenxe/uploads", express.static("uploads"));
 
 app.use((req, res, next) => {
