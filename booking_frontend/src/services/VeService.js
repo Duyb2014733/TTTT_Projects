@@ -52,22 +52,6 @@ class VeService {
       })
     ).data;
   }
-
-  async searchTickets(departure_city, arrival_city, departure_date) {
-    try {
-      const response = await this.api.get("/search-tickets", {
-        params: {
-          departure_city,
-          arrival_city,
-          departure_date,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error searching tickets:", error);
-      throw new Error("Error searching tickets");
-    }
-  }
 }
 
 export default new VeService();

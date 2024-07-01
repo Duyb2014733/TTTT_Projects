@@ -54,6 +54,22 @@ class ChuyenXeService {
       })
     ).data;
   }
+
+  async searchChuyenXe(departure_city, arrival_city, departure_date) {
+    try {
+      const response = await this.api.get("/searchChuyenXe", {
+        params: {
+          departure_city,
+          arrival_city,
+          departure_date,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error searching chuyenxe:", error);
+      throw new Error("Error searching chuyenxe");
+    }
+  }
 }
 
 export default new ChuyenXeService();

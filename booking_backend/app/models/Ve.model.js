@@ -6,8 +6,15 @@ const VeSchema = new mongoose.Schema({
     ref: "ChuyenXe",
     required: true,
   },
-  seat_number: { type: String, required: true },
-  price: { type: Number, required: true },
+  seat_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ViTriGhe",
+    required: true,
+  },
+  ve_name: {
+    type: String,
+    required: true,
+  },
 });
 
 const Ve = mongoose.model("Ve", VeSchema);

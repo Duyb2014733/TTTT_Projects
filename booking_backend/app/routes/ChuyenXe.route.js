@@ -3,6 +3,8 @@ const router = express.Router();
 const middlewareController = require("../controllers/Middleware.controller");
 const chuyenXeController = require("../controllers/ChuyenXe.controller");
 
+router.get("/searchChuyenXe", chuyenXeController.searchChuyenXe);
+
 router
   .route("/")
   .post(

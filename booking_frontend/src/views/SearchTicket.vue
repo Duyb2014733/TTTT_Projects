@@ -40,23 +40,24 @@
                         <a-empty v-if="!loading && filteredTrips.length === 0"
                             description="Không tìm thấy chuyến xe phù hợp." />
                         <div v-else class="trip-list">
-                            <a-card v-for="trip in filteredTrips" :key="trip.trip._id" class="trip-card" hoverable>
+                            <a-card v-for="trip in filteredTrips" :key="trip._id" class="trip-card" hoverable>
                                 <a-row type="flex" align="stretch">
                                     <a-col :span="8" class="trip-image-container">
-                                        <img :alt="trip.trip.chuyenXe_name" :src="trip.trip.image" class="trip-image" />
+                                        <img :alt="trip.chuyenXe_name" :src="trip.image" class="trip-image" />
                                     </a-col>
                                     <a-col :span="16" class="trip-details">
-                                        <a-card-meta :title="trip.trip.chuyenXe_name" class="trip-title">
+                                        <a-card-meta :title="trip.chuyenXe_name" class="trip-title">
                                             <template #description>
                                                 <div class="trip-info">
                                                     <p><strong>Ngày khởi hành:</strong> {{
-                                                        formatDate(trip.trip.departure_time) }}</p>
+                                                        formatDate(trip.departure_time) }}</p>
                                                     <p><strong>Giờ khởi hành:</strong> {{
-                                                        formatTime(trip.trip.departure_time) }}</p>
+                                                        formatTime(trip.departure_time) }}</p>
                                                     <p><strong>Số ghế trống:</strong> {{ trip.availableSeats }}</p>
                                                     <p><strong>Giá vé:</strong> <span class="trip-price">{{
                                                         formatPrice(trip.price) }} VND</span></p>
-                                                    <p><strong>Nhà xe:</strong> {{ trip.trip.bus_id.company_name }}</p>
+                                                    <p><strong>Nhà xe:</strong> {{ trip.bus_id.company_name }}
+                                                    </p>
                                                 </div>
                                             </template>
                                         </a-card-meta>
@@ -76,7 +77,7 @@
 </template>
 
 <script>
-import VeService from '@/services/VeService';
+import ChuyenXeService from '@/services/ChuyenXeService';
 import { Alert, Button, Card, Col, Empty, Form, Row, Select, Slider, Spin, TimePicker } from 'ant-design-vue';
 
 export default {
@@ -118,10 +119,11 @@ export default {
             this.error = null;
             try {
                 const { departure_city, arrival_city, departure_date } = this.$route.query;
-                const response = await VeService.searchTickets(departure_city, arrival_city, departure_date);
+                const response = await ChuyenXeService.searchChuyenXe(departure_city, arrival_city, departure_date);
                 if (response.success) {
                     this.trips = response.data;
                     this.filteredTrips = [...this.trips];
+                    console.log(filteredTrips);
                     this.updateBusCompanies();
                     this.updateMaxPrice();
                 } else {
@@ -135,7 +137,7 @@ export default {
             }
         },
         updateBusCompanies() {
-            this.busCompanies = [...new Set(this.trips.map(trip => trip.trip.busCompany))];
+            this.busCompanies = [...new Set(this.trips.map(trip => trip.bus_id.company_name))];
         },
         updateMaxPrice() {
             this.maxPrice = Math.max(...this.trips.map(trip => trip.price));
@@ -143,7 +145,7 @@ export default {
         },
         applyFilters() {
             this.filteredTrips = this.trips.filter(trip => {
-                const tripTime = new Date(trip.trip.departure_time);
+                const tripTime = new Date(trip.departure_time);
                 const tripHours = tripTime.getHours();
                 const tripMinutes = tripTime.getMinutes();
 
@@ -155,7 +157,7 @@ export default {
 
                 const priceInRange = trip.price >= this.filters.priceRange[0] && trip.price <= this.filters.priceRange[1];
 
-                const companyMatches = this.filters.busCompany.length === 0 || this.filters.busCompany.includes(trip.trip.busCompany);
+                const companyMatches = this.filters.busCompany.length === 0 || this.filters.busCompany.includes(trip.bus_id.company_name);
 
                 return timeInRange && priceInRange && companyMatches;
             });
@@ -163,7 +165,7 @@ export default {
         selectTrip(trip) {
             this.$router.push({
                 name: 'BookTicket',
-                params: { id: trip.trip._id },
+                params: { id: trip._id },
                 query: { availableSeats: trip.availableSeats, price: trip.price }
             });
         },

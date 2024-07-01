@@ -79,3 +79,44 @@ exports.deleteAllChuyenXes = async (req, res, next) => {
     next(new ApiError(500, `Error deleting all ChuyenXes: ${error.message}`));
   }
 };
+
+exports.searchChuyenXe = async (req, res) => {
+  try {
+    const { departure_city, arrival_city, departure_date } = req.query;
+
+    // Validate input
+    if (!departure_city || !arrival_city || !departure_date) {
+      return res.status(400).json({
+        message:
+          "Vui lòng cung cấp đầy đủ thông tin thành phố đi, thành phố đến và ngày khởi hành",
+      });
+    }
+
+    // Validate date format
+    const parsedDate = new Date(departure_date);
+    if (isNaN(parsedDate.getTime())) {
+      return res.status(400).json({
+        message:
+          "Định dạng ngày không hợp lệ. Vui lòng sử dụng định dạng YYYY-MM-DD",
+      });
+    }
+
+    // Call the searchChuyenXe function
+    const availableChuyenXe = await chuyenXeService.searchChuyenXe(
+      departure_city,
+      arrival_city,
+      parsedDate
+    );
+
+    // Return the results
+    res.status(200).json({
+      message: "Tìm kiếm chuyến xe thành công",
+      data: availableChuyenXe,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Đã xảy ra lỗi khi tìm kiếm chuyến xe",
+      error: error.message,
+    });
+  }
+};
