@@ -6,7 +6,6 @@ class ChuyenXeService {
   // Tạo một chuyến xe mới
   async createChuyenXe(chuyenXeData, imagePath) {
     try {
-      console.log("Creating ChuyenXe with data:", chuyenXeData); // Add this for debugging
       const chuyenXe = new ChuyenXe(chuyenXeData);
       return await chuyenXe.save();
     } catch (error) {

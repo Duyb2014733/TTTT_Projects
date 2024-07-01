@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 
 const ChuyenXeSchema = new mongoose.Schema({
-  bus_id: {
+  xe_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "NhaXe",
+    ref: "Xe",
     required: true,
   },
   chuyenXe_name: {
     type: String,
     required: true,
   },
-  route_id: {
+  tuyenduong_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "TuyenDuong",
     required: true,
@@ -18,6 +18,7 @@ const ChuyenXeSchema = new mongoose.Schema({
   departure_time: { type: Date, required: true },
   arrival_time: { type: Date, required: true },
   image: { type: String, required: true },
+  price: { type: String, required: true },
 });
 
 const ChuyenXe = mongoose.model("ChuyenXe", ChuyenXeSchema);
