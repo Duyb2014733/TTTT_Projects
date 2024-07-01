@@ -38,7 +38,7 @@
         </a-table>
 
         <!-- Modal Thêm Chuyen Xe -->
-        <a-modal title="Thêm chuyến xe" v-model:visible="isAddModalVisible" @cancel="handleAddCancel" @ok="addChuyenXe">
+        <a-modal title="Thêm chuyến xe" v-model:open="isAddModalVisible" @cancel="handleAddCancel" @ok="addChuyenXe">
             <a-form ref="addFormRef" :model="newChuyenXe" layout="vertical">
                 <a-form-item name="xe_id" label="Id xe" :rules="{ required: true, message: 'Vui lòng chọn Id xe!' }">
                     <a-select v-model:value="newChuyenXe.xe_id" placeholder="Chọn Id xe">
@@ -83,7 +83,7 @@
         </a-modal>
 
         <!-- Modal Chỉnh sửa Chuyen Xe -->
-        <a-modal title="Chỉnh sửa chuyến xe" v-model:visible="isEditModalVisible" @cancel="handleEditCancel"
+        <a-modal title="Chỉnh sửa chuyến xe" v-model:open="isEditModalVisible" @cancel="handleEditCancel"
             @ok="editChuyenXe">
             <a-form ref="editFormRef" :model="currentChuyenXe" layout="vertical">
                 <a-form-item name="xe_id" label="Id xe" :rules="{ required: true, message: 'Vui lòng chọn Id xe!' }">

@@ -21,6 +21,9 @@
                 <template v-else-if="column.key === 'trip_id'">
                     {{ record.trip_id.chuyenXe_name }}
                 </template>
+                <template v-else-if="column.key === 'seat_id'">
+                    {{ record.seat_id.vitrighe_name }}
+                </template>
                 <template v-else>
                     {{ record[column.dataIndex] }}
                 </template>
@@ -38,12 +41,12 @@
                         </a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item name="seat_number" label="Số Ghế"
+                <a-form-item name="seat_id" label="Số Ghế"
                     :rules="[{ required: true, message: 'Vui lòng nhập số ghế!' }]">
-                    <a-input v-model:value="newVe.seat_number" placeholder="Số Ghế" />
+                    <a-input v-model:value="newVe.seat_id" placeholder="Số Ghế" />
                 </a-form-item>
-                <a-form-item name="price" label="Giá" :rules="[{ required: true, message: 'Vui lòng nhập giá!' }]">
-                    <a-input v-model:value="newVe.price" placeholder="Giá" />
+                <a-form-item name="ve_name" label="Giá" :rules="[{ required: true, message: 'Vui lòng nhập giá!' }]">
+                    <a-input v-model:value="newVe.ve_name" placeholder="Giá" />
                 </a-form-item>
             </a-form>
         </a-modal>
@@ -60,12 +63,12 @@
                         </a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item name="seat_number" label="Số Ghế"
+                <a-form-item name="seat_id" label="Số Ghế"
                     :rules="[{ required: true, message: 'Vui lòng nhập số ghế!' }]">
-                    <a-input v-model:value="currentVe.seat_number" placeholder="Số Ghế" />
+                    <a-input v-model:value="currentVe.seat_id" placeholder="Số Ghế" />
                 </a-form-item>
-                <a-form-item name="price" label="Giá" :rules="[{ required: true, message: 'Vui lòng nhập giá!' }]">
-                    <a-input v-model:value="currentVe.price" placeholder="Giá" />
+                <a-form-item name="ve_name" label="Giá" :rules="[{ required: true, message: 'Vui lòng nhập giá!' }]">
+                    <a-input v-model:value="currentVe.ve_name" placeholder="Giá" />
                 </a-form-item>
             </a-form>
         </a-modal>
@@ -81,16 +84,16 @@ export default {
         return {
             columns: [
                 { title: 'ID Chuyến Xe', dataIndex: 'trip_id', key: 'trip_id' },
-                { title: 'Số Ghế', dataIndex: 'seat_number', key: 'seat_number' },
-                { title: 'Giá', dataIndex: 'price', key: 'price' },
+                { title: 'Tên Vé', dataIndex: 've_name', key: 've_name' },
+                { title: 'ID Ghế', dataIndex: 'seat_id', key: 'seat_id' },
                 { title: 'Hành Động', key: 'action' },
             ],
             ves: [],
             chuyenXes: [],
             isAddModalVisible: false,
             isEditModalVisible: false,
-            newVe: { trip_id: '', seat_number: '', price: '' },
-            currentVe: { trip_id: '', seat_number: '', price: '' },
+            newVe: { trip_id: '', ve_name: '', seat_id: '' },
+            currentVe: { trip_id: '', ve_name: '', seat_id: '' },
         };
     },
     methods: {
@@ -129,7 +132,7 @@ export default {
             this.resetNewVe();
         },
         resetNewVe() {
-            this.newVe = { trip_id: '', seat_number: '', price: '' };
+            this.newVe = { trip_id: '', seat_id: '', ve_name: '' };
         },
         showEditModal(ve) {
             this.currentVe = { ...ve };
