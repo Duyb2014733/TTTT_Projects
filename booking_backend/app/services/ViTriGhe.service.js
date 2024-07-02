@@ -20,6 +20,17 @@ class ViTriGheService {
   async deleteViTriGhe(id) {
     return await ViTriGhe.findByIdAndDelete(id);
   }
+
+  async getViTriGheByXeId(xeId) {
+    try {
+      const vitrigheList = await ViTriGhe.find({
+        vitrighe_vehicle: xeId,
+      }).populate("vitrighe_vehicle");
+      return vitrigheList;
+    } catch (error) {
+      throw new Error("Error fetching seat information: " + error.message);
+    }
+  }
 }
 
 module.exports = ViTriGheService;

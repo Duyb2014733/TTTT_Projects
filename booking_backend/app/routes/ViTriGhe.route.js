@@ -17,4 +17,6 @@ router
   .put(middlewareController.verifyToken, viTriGheController.updateViTriGhe)
   .delete(middlewareController.verifyToken, viTriGheController.deleteViTriGhe);
 
+router.route("/xe/:xeId").get(viTriGheController.getViTriGheByXeId);
+
 module.exports = router;

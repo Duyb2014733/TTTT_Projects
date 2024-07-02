@@ -1,5 +1,8 @@
 const ViTriGheService = require("../services/ViTriGhe.service");
 const XeService = require("../services/Xe.service");
+const mongoose = require("mongoose");
+const ViTriGhe = require("../models/ViTriGhe.model");
+const Xe = require("../models/Xe.model");
 
 const viTriGheService = new ViTriGheService();
 const xeService = new XeService();
@@ -24,6 +27,17 @@ exports.getViTriGheById = async (req, res) => {
       return res.status(404).json({ message: "Không tìm thấy vị trí ghế" });
     }
     res.json(viTriGhe);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getViTriGheByXeId = async (req, res) => {
+  const { xeId } = req.params;
+
+  try {
+    const vitrigheList = await viTriGheService.getViTriGheByXeId(xeId);
+    res.status(200).json(vitrigheList);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
