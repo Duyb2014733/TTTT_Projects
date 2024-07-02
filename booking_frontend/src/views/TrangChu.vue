@@ -35,7 +35,7 @@ export default {
             // Use try-catch for error handling during navigation
             try {
                 this.$router.push({
-                    name: 'SearchTicket',
+                    name: 'SearchChuyeXe',
                     query: { ...this.searchParams }
                 });
             } catch (error) {

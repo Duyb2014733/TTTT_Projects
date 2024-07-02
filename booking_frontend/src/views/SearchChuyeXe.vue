@@ -117,7 +117,7 @@
                                         </a-col>
                                     </a-row>
                                     <a-button type="primary" @click="bookTrip(trip)" class="book-button">
-                                        Đặt Vé
+                                        Chọn chuyến
                                     </a-button>
                                 </a-col>
                             </a-row>

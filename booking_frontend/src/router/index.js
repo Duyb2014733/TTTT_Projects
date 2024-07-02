@@ -51,9 +51,9 @@ const routes = [
     component: () => import("@/views/ThanhToan.vue"),
   },
   {
-    path: "/ve/search-tickets",
-    name: "SearchTicket",
-    component: () => import("@/views/SearchTicket.vue"),
+    path: "/chuyenxe/searchChuyenXe",
+    name: "SearchChuyeXe",
+    component: () => import("@/views/SearchChuyeXe.vue"),
   },
   {
     path: "/",
