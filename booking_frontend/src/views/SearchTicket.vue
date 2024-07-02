@@ -66,30 +66,31 @@
                 <h2 class="filter-title">Bộ Lọc</h2>
                 <a-form @submit.prevent="applyFilters">
                     <a-form-item label="Giờ Đi">
-                        <a-time-picker v-model="filters.departureTime" style="width: 100%;" />
+                        <a-time-picker v-model:value="filters.departureTime" style="width: 100%;" />
                     </a-form-item>
                     <a-form-item label="Giá Tiền">
-                        <a-slider range v-model="filters.priceRange" :min="0" :max="1000000" />
+                        <a-slider range v-model:value="filters.priceRange" :min="0" :max="1000000" />
                     </a-form-item>
                     <a-form-item label="Nhà Xe">
-                        <a-select v-model="filters.busOperator" style="width: 100%;" placeholder="Chọn nhà xe">
+                        <a-select v-model:value="filters.busOperator" style="width: 100%;" placeholder="Chọn nhà xe">
                             <a-select-option v-for="operator in busOperators" :key="operator" :value="operator">
                                 {{ operator }}
                             </a-select-option>
                         </a-select>
                     </a-form-item>
                     <a-form-item>
-                        <a-button type="primary" htmlType="submit">
+                        <a-button type="primary" html-type="submit">
                             Áp Dụng
                         </a-button>
                     </a-form-item>
                 </a-form>
             </a-layout-sider>
+
             <a-layout-content class="content">
                 <h1 class="title">Kết Quả Tìm Kiếm Chuyến Đi</h1>
                 <a-spin :spinning="loading">
                     <a-alert v-if="error" type="error" :message="error" show-icon />
-                    <a-empty v-else-if="trips.length === 0"
+                    <a-empty v-else-if="filteredTrips.length === 0"
                         description="Không tìm thấy chuyến đi nào phù hợp với tiêu chí tìm kiếm." />
                     <div v-else>
                         <a-card v-for="trip in filteredTrips" :key="trip.chuyenXe._id" class="trip-card"
@@ -131,6 +132,7 @@
 <script>
 import ChuyenXeService from '@/services/ChuyenXeService';
 import TuyenDuongService from '@/services/TuyenDuongService';
+import { notification } from 'ant-design-vue';
 
 export default {
     data() {
@@ -140,17 +142,19 @@ export default {
             departureDate: null,
             TuyenDuongs: [],
             trips: [],
-            loading: true,
+            loading: false,
             error: null,
             filters: {
                 departureTime: null,
                 priceRange: [0, 1000000],
                 busOperator: null
-            },
-            busOperators: ['Nhà Xe A', 'Nhà Xe B', 'Nhà Xe C']
+            }
         };
     },
     computed: {
+        busOperators() {
+            return [...new Set(this.trips.map(trip => trip.chuyenXe.xe_id.nhaXe))];
+        },
         uniqueDepartureCities() {
             return [...new Set(this.TuyenDuongs.map(td => td.departure_city))];
         },
@@ -159,9 +163,12 @@ export default {
         },
         filteredTrips() {
             return this.trips.filter(trip => {
-                const matchesDepartureTime = !this.filters.departureTime || new Date(trip.chuyenXe.departure_time).getHours() === this.filters.departureTime.getHours();
-                const matchesPrice = trip.chuyenXe.price >= this.filters.priceRange[0] && trip.chuyenXe.price <= this.filters.priceRange[1];
-                const matchesBusOperator = !this.filters.busOperator || trip.chuyenXe.nhaXe === this.filters.busOperator;
+                const matchesDepartureTime = !this.filters.departureTime ||
+                    new Date(trip.chuyenXe.departure_time).getHours() === this.filters.departureTime.getHours();
+                const matchesPrice = trip.chuyenXe.price >= this.filters.priceRange[0] &&
+                    trip.chuyenXe.price <= this.filters.priceRange[1];
+                const matchesBusOperator = !this.filters.busOperator ||
+                    trip.chuyenXe.xe_id.nhaXe === this.filters.busOperator;
 
                 return matchesDepartureTime && matchesPrice && matchesBusOperator;
             });
@@ -172,11 +179,18 @@ export default {
         this.fetchTrips();
     },
     methods: {
+        showNotification(type, message) {
+            notification[type]({
+                message: 'Thông báo',
+                description: message,
+            });
+        },
         async fetchTuyenDuongs() {
             try {
                 this.TuyenDuongs = await TuyenDuongService.getAllTuyenDuongs();
             } catch (error) {
                 console.error('Lỗi tìm nạp tuyến đường:', error);
+                this.showNotification('error', 'Không thể tải danh sách tuyến đường. Vui lòng thử lại sau.');
             }
         },
         async fetchTrips() {
@@ -184,46 +198,60 @@ export default {
             const arrivalCity = this.$route.query.arrival_city;
             const departureDate = this.$route.query.departure_date;
 
-            if (!departureCity || !arrivalCity || !departureDate) {
-                this.error = 'Thiếu thông tin tìm kiếm';
-                this.loading = false;
+            if (departureCity && arrivalCity && departureDate) {
+                this.loading = true;
+                this.error = null;
+
+                try {
+                    const result = await ChuyenXeService.searchChuyenXe(departureCity, arrivalCity, departureDate);
+                    this.trips = result.data;
+                    if (this.trips.length === 0) {
+                        this.showNotification('info', 'Không tìm thấy chuyến đi nào phù hợp với tiêu chí tìm kiếm.');
+                    }
+                } catch (err) {
+                    this.error = err.message || 'Có lỗi xảy ra khi tìm kiếm chuyến đi';
+                    this.showNotification('error', this.error);
+                } finally {
+                    this.loading = false;
+                }
+            }
+        },
+        async searchRoutes() {
+            if (!this.departureLocation || !this.destination || !this.departureDate) {
+                this.showNotification('error', 'Vui lòng chọn đầy đủ thông tin tìm kiếm');
                 return;
             }
 
+            this.loading = true;
+            this.error = null;
+            const formattedDate = this.departureDate.format('YYYY-MM-DD');
+
             try {
-                const result = await ChuyenXeService.searchChuyenXe(departureCity, arrivalCity, departureDate);
+                const result = await ChuyenXeService.searchChuyenXe(
+                    this.departureLocation,
+                    this.destination,
+                    formattedDate
+                );
                 this.trips = result.data;
+                if (this.trips.length === 0) {
+                    this.showNotification('info', 'Không tìm thấy chuyến đi nào phù hợp với tiêu chí tìm kiếm.');
+                }
             } catch (err) {
-                this.error = err.message || 'Có lỗi xảy ra khi tìm kiếm chuyến đi';
+                this.error = 'Có lỗi xảy ra khi tìm kiếm chuyến đi';
+                this.showNotification('error', this.error);
             } finally {
                 this.loading = false;
             }
-        },
-        searchRoutes() {
-            if (!this.departureLocation || !this.destination || !this.departureDate) {
-                this.$message.error('Vui lòng chọn đầy đủ thông tin tìm kiếm');
-                return;
-            }
-
-            const formattedDate = this.departureDate.format('YYYY-MM-DD');
-
-            this.$emit('search', {
-                departure_city: this.departureLocation,
-                arrival_city: this.destination,
-                departure_date: formattedDate
-            });
-
-            this.fetchTrips();
         },
         formatDate(dateString) {
             return new Date(dateString).toLocaleString();
         },
         bookTrip(trip) {
-            this.$message.success(`Đã xác nhận đặt vé: ${trip.chuyenXe.chuyenXe_name}`);
+            this.showNotification('success', `Đã xác nhận đặt vé: ${trip.chuyenXe.chuyenXe_name}`);
             console.log('Đặt chuyến đi:', trip);
         },
         applyFilters() {
-            this.$message.success('Đã áp dụng bộ lọc');
+            this.showNotification('success', 'Đã áp dụng bộ lọc');
         }
     }
 };
@@ -241,7 +269,7 @@ export default {
     background-repeat: no-repeat;
     background-size: cover;
     padding: 40px 20px;
-    min-height: 300px;
+    min-height: 90px;
     display: flex;
     align-items: center;
     justify-content: center;

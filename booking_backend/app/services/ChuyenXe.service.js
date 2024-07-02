@@ -73,7 +73,7 @@ class ChuyenXeService {
       });
 
       if (!route) {
-        throw new Error("Không tìm thấy tuyến đường cho các thành phố đã cho");
+        throw error;
       }
 
       // Tìm chuyến xe trên tuyến đường này cho ngày đã cho
@@ -91,9 +91,7 @@ class ChuyenXeService {
       }).populate("xe_id");
 
       if (!trips || trips.length === 0) {
-        throw new Error(
-          "Không tìm thấy chuyến xe cho tuyến đường và ngày đã cho"
-        );
+        throw error;
       }
 
       // Tìm vé có sẵn cho các chuyến xe này
@@ -111,7 +109,6 @@ class ChuyenXeService {
 
       return availableChuyenXe;
     } catch (error) {
-      console.error("Lỗi trong searchChuyenXe:", error);
       throw error;
     }
   }
