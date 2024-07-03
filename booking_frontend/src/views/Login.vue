@@ -2,21 +2,27 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form class="form" @submit.prevent="submitForm">
+                <Form @submit="submitForm" :validation-schema="schema" v-slot="{ errors }">
                     <p class="form-title">Đăng nhập tài khoản</p>
                     <div class="input-container form-group">
-                        <input v-model="loginData.email" type="email" placeholder="Enter email" class="form-control"
-                            required>
+                        <Field name="email" type="email" v-model="loginData.email" placeholder="Enter email"
+                            class="form-control" :class="{ 'is-invalid': errors.email }" />
+                        <ErrorMessage name="email" class="invalid-feedback" />
                     </div>
                     <div class="input-container form-group">
-                        <input v-model="loginData.password" type="password" placeholder="Enter password"
-                            class="form-control" required>
+                        <Field name="password" type="password" v-model="loginData.password" placeholder="Enter password"
+                            class="form-control" :class="{ 'is-invalid': errors.password }" />
+                        <ErrorMessage name="password" class="invalid-feedback" />
                     </div>
-                    <button type="submit" class="submit">Đăng nhập</button>
+                    <button type="submit" class="submit" :disabled="isLoading">
+                        <span v-if="isLoading" class="loading-spinner"></span>
+                        <span v-if="isLoading">Đang xử lý...</span>
+                        <span v-else>Đăng nhập</span>
+                    </button>
                     <p class="signup-link">
                         Bạn chưa có tài khoản? <router-link :to="{ name: 'Register' }">Đăng ký</router-link>
                     </p>
-                </form>
+                </Form>
             </div>
         </div>
     </div>
@@ -25,18 +31,32 @@
 <script>
 import KhachHangService from "@/services/KhachHangService";
 import { notification } from 'ant-design-vue';
+import { ErrorMessage, Field, Form } from 'vee-validate';
+import * as yup from 'yup';
 
 export default {
+    components: {
+        Form,
+        Field,
+        ErrorMessage
+    },
     data() {
+        const schema = yup.object().shape({
+            email: yup.string().required('Email là bắt buộc').email('Email không hợp lệ'),
+            password: yup.string().required('Mật khẩu là bắt buộc').min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
+        });
         return {
             loginData: {
                 email: '',
                 password: ''
-            }
+            },
+            isLoading: false,
+            schema,
         };
     },
     methods: {
         async submitForm() {
+            this.isLoading = true;
             try {
                 const khachHang = await KhachHangService.loginKhachHang(this.loginData);
                 localStorage.setItem('accessToken', khachHang.accessToken);
@@ -47,16 +67,19 @@ export default {
                 if (khachHang.admin === true) {
                     setTimeout(() => {
                         window.location.reload();
-                    }, 2000);
+                    }, 1000);
                     this.$router.push({ name: 'Admin' });
                 } else {
                     setTimeout(() => {
                         window.location.reload();
-                    }, 2000);
+                    }, 1000);
                     this.$router.push({ name: 'TrangChu' });
                 }
+
             } catch (error) {
-                this.showNotification('error', error.message || 'Đăng nhập thất bại!');
+                this.showNotification('error', 'Đăng nhập thất bại!');
+            } finally {
+                this.isLoading = false;
             }
         },
         showNotification(type, message) {
@@ -65,7 +88,7 @@ export default {
                 description: message,
             });
         }
-    }
+    },
 }
 </script>
 
@@ -135,6 +158,17 @@ export default {
     width: 100%;
     border-radius: 0.5rem;
     text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.submit:disabled {
+    background-color: #9CA3AF;
+    cursor: not-allowed;
 }
 
 .signup-link {
@@ -146,5 +180,45 @@ export default {
 
 .signup-link a {
     text-decoration: underline;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, .3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin {
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 </style>
