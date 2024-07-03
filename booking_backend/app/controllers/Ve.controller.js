@@ -70,3 +70,13 @@ exports.deleteAllVes = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getVeIdByViTriGheId = async (req, res, next) => {
+  const { viTriGheId } = req.params;
+  try {
+    const veId = await veService.getVeIdByViTriGheId(viTriGheId);
+    res.json(veId);
+  } catch (error) {
+    next(error);
+  }
+};

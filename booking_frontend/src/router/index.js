@@ -46,6 +46,11 @@ const routes = [
     component: () => import("@/views/Xe.vue"),
   },
   {
+    path: "/vitrighe",
+    name: "ViTriGhe",
+    component: () => import("@/views/ViTriGhe.vue"),
+  },
+  {
     path: "/thanhtoan",
     name: "ThanhToan",
     component: () => import("@/views/ThanhToan.vue"),
@@ -73,7 +78,7 @@ const routes = [
   {
     path: "/admin",
     name: "Admin",
-    component: () => import("@/views/Home_page.vue"),
+    component: () => import("@/views/Admin.vue"),
   },
 ];
 const router = createRouter({

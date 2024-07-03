@@ -68,6 +68,18 @@ class VeService {
       throw error;
     }
   }
+
+  async getVeIdByViTriGheId(viTriGheId) {
+    try {
+      const ve = await Ve.findOne({ seat_id: viTriGheId });
+      if (!ve) {
+        throw new Error("Vé không tồn tại cho vị trí ghế này");
+      }
+      return ve._id; // Trả về id của vé tương ứng với vị trí ghế
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = VeService;

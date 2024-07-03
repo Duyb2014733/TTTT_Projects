@@ -52,6 +52,10 @@ class VeService {
       })
     ).data;
   }
+
+  async getVeIdByViTriGheId(viTriGheId) {
+    return (await this.api.get(`/vitrighe/${viTriGheId}`)).data;
+  }
 }
 
 export default new VeService();

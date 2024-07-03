@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid">
+    <div class="container">
         <div class="header">
             <h1>Quản lý Thanh Toán</h1>
             <a-button type="primary" @click="showAddModal">
@@ -28,7 +28,7 @@
         </a-table>
 
         <!-- Add chuyến xe Modal -->
-        <a-modal title="Thêm chuyến xe" v-model:open="isAddModalVisible" @cancel="handleAddCancel" @ok="addThanhToan">
+        <a-modal title="Thêm thanh toán" v-model:open="isAddModalVisible" @cancel="handleAddCancel" @ok="addThanhToan">
             <a-form ref="addFormRef" :model="newThanhToan" layout="vertical" name="add_form">
                 <a-form-item name="customer_id" label="Id khách hàng"
                     :rules="[{ required: true, message: 'Vui lòng chọn Id khách hàng!' }]">
@@ -47,8 +47,12 @@
                     <a-date-picker v-model:value="newThanhToan.payment_date" show-time placeholder="Ngày thanh toán" />
                 </a-form-item>
                 <a-form-item name="payment_method" label="Phương thức thanh toán"
-                    :rules="[{ required: true, message: 'Vui lòng nhập số lượng!' }]">
-                    <a-input v-model:value="newThanhToan.payment_method" placeholder="Phương thức thanh toán" />
+                    :rules="[{ required: true, message: 'Vui lòng chọn phương thức thanh toán!' }]">
+                    <a-select v-model:value="newThanhToan.payment_method" placeholder="Phương thức thanh toán">
+                        <a-select-option v-for="(text, status) in paymentMethods" :key="status" :value="status">
+                            {{ text }}
+                        </a-select-option>
+                    </a-select>
                 </a-form-item>
             </a-form>
         </a-modal>
@@ -59,7 +63,7 @@
             <a-form ref="editFormRef" :model="currentThanhToan" layout="vertical" name="edit_form">
                 <a-form-item name="customer_id" label="Id khách hàng"
                     :rules="[{ required: true, message: 'Vui lòng chọn Id khách hàng!' }]">
-                    <a-select v-model="currentThanhToan.customer_id" placeholder="Id khách hàng">
+                    <a-select v-model:value="currentThanhToan.customer_id" placeholder="Id khách hàng">
                         <a-select-option v-for="KhachHang in KhachHangs" :key="KhachHang._id" :value="KhachHang._id">
                             {{ KhachHang.name }}
                         </a-select-option>
@@ -71,11 +75,16 @@
                 </a-form-item>
                 <a-form-item name="payment_date" label="Ngày thanh toán"
                     :rules="[{ required: true, message: 'Vui lòng nhập ngày thanh toán!' }]">
-                    <a-date-picker v-model="currentThanhToan.payment_date" show-time placeholder="Ngày thanh toán" />
+                    <a-date-picker v-model:value="currentThanhToan.payment_date" show-time
+                        placeholder="Ngày thanh toán" />
                 </a-form-item>
                 <a-form-item name="payment_method" label="Phương thức thanh toán"
-                    :rules="[{ required: true, message: 'Vui lòng nhập số lượng!' }]">
-                    <a-input v-model:value="currentThanhToan.payment_method" placeholder="Phương thức thanh toán" />
+                    :rules="[{ required: true, message: 'Vui lòng chọn phương thức thanh toán!' }]">
+                    <a-select v-model:value="currentThanhToan.payment_method" placeholder="Phương thức thanh toán">
+                        <a-select-option v-for="(text, status) in paymentMethods" :key="status" :value="status">
+                            {{ text }}
+                        </a-select-option>
+                    </a-select>
                 </a-form-item>
             </a-form>
         </a-modal>
@@ -103,6 +112,11 @@ export default {
             isEditModalVisible: false,
             newThanhToan: { customer_id: '', amount: '', payment_date: '', payment_method: '', },
             currentThanhToan: null,
+            paymentMethods: {
+                available: 'Còn trống',
+                booked: 'Đã đặt',
+                unavailable: 'Không khả dụng',
+            }
         };
     },
     methods: {
@@ -179,6 +193,14 @@ export default {
                 message: 'Thông báo',
                 description: message,
             });
+        },
+        getStatusText(status) {
+            const texts = {
+                available: 'Còn trống',
+                booked: 'Đã đặt',
+                unavailable: 'Không khả dụng',
+            };
+            return texts[status] || status;
         },
     },
     mounted() {

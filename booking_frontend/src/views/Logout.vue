@@ -13,12 +13,10 @@ export default {
     },
     methods: {
         logout() {
-            // Remove authentication tokens from localStorage
             localStorage.removeItem('accessToken');
             localStorage.removeItem('isAdmin');
             localStorage.removeItem('idKhachHang');
 
-            // Redirect to the login page
             this.$router.push('/login');
         }
     }

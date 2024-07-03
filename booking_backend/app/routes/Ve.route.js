@@ -3,6 +3,8 @@ const router = express.Router();
 const middlewareController = require("../controllers/Middleware.controller");
 const veController = require("../controllers/Ve.controller");
 
+router.get("/vitrighe/:viTriGheId", veController.getVeIdByViTriGheId);
+
 router
   .route("/")
   .post(middlewareController.verifyTokenAndAdmin, veController.createVe)

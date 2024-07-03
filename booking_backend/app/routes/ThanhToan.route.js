@@ -3,12 +3,14 @@ const router = express.Router();
 const middlewareController = require("../controllers/Middleware.controller");
 const thanhToanController = require("../controllers/ThanhToan.controller");
 
+router.get(
+  "/khachhang/:customerId",
+  thanhToanController.getThanhToansByCustomerId
+);
+
 router
   .route("/")
-  .post(
-    middlewareController.verifyTokenAndAdmin,
-    thanhToanController.createThanhToan
-  )
+  .post(middlewareController.verifyToken, thanhToanController.createThanhToan)
   .get(thanhToanController.getAllThanhToans)
   .delete(
     middlewareController.verifyTokenAndAdmin,

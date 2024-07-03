@@ -23,16 +23,38 @@ class ThanhToanService {
     return (await this.api.get("/")).data;
   }
 
-  async updateThanhToan(thanhToanId, thanhToanData) {
-    return (await this.api.put(`/${thanhToanId}`, thanhToanData)).data;
+  async updateThanhToan(thanhToanId, thanhToanData, accessToken) {
+    return (
+      await this.api.put(`/${thanhToanId}`, thanhToanData, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteThanhToan(thanhToanId) {
-    return (await this.api.delete(`/${thanhToanId}`)).data;
+  async deleteThanhToan(thanhToanId, accessToken) {
+    return (
+      await this.api.delete(`/${thanhToanId}`, {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
   }
 
-  async deleteAllThanhToans() {
-    return (await this.api.delete("/")).data;
+  async deleteAllThanhToans(accessToken) {
+    return (
+      await this.api.delete("/", {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      })
+    ).data;
+  }
+
+  async getThanhToansByCustomerId(id) {
+    return (await this.api.get(`/khachhang/${id}`)).data;
   }
 }
 

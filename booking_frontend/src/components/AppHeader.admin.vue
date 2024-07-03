@@ -56,46 +56,58 @@ export default {
         return {
             menuItems: [
                 {
+                    label: 'Trang chủ',
+                    icon: 'fa-solid fa-house',
+                    to: '/admin',
+                    key: '1'
+                },
+                {
                     label: 'Quản lý Khách Hàng',
                     icon: 'fa-regular fa-user',
                     to: '/khachhang',
-                    key: '1'
+                    key: '2'
                 },
                 {
                     label: 'Quản lý tuyến đường',
                     icon: 'fa-solid fa-route',
                     to: '/tuyenduong',
-                    key: '2'
+                    key: '3'
                 },
                 {
                     label: 'Quản lý Nhà Xe',
                     icon: 'fa-solid fa-bus',
                     to: '/nhaxe',
-                    key: '3'
+                    key: '4'
                 },
                 {
                     label: 'Quản lý Vé',
                     icon: 'fa-solid fa-ticket',
                     to: '/ve',
-                    key: '4'
+                    key: '5'
                 },
                 {
                     label: 'Quản lý chuyến xe',
                     icon: 'fa-solid fa-van-shuttle',
                     to: '/chuyenxe',
-                    key: '5'
+                    key: '6'
                 },
                 {
                     label: 'Quản lý xe',
                     icon: 'fa-solid fa-car',
                     to: '/xe',
-                    key: '5'
+                    key: '7'
+                },
+                {
+                    label: 'Quản lý vị trí ghế',
+                    icon: 'fa-solid fa-chair',
+                    to: '/vitrighe',
+                    key: '7'
                 },
                 {
                     label: 'Quản lý thanh toán',
                     icon: 'fa-solid fa-credit-card',
                     to: '/thanhtoan',
-                    key: '6'
+                    key: '9'
                 }
             ],
             loggedInMenuItems: [
@@ -103,13 +115,13 @@ export default {
                     label: 'Đăng nhập',
                     icon: 'fa-solid fa-right-to-bracket',
                     to: '/login',
-                    key: '7'
+                    key: '10'
                 },
                 {
                     label: 'Đăng ký',
                     icon: 'fa-solid fa-user-plus',
                     to: '/register',
-                    key: '8'
+                    key: '11'
                 }
             ],
             isLoggedIn: false
@@ -195,8 +207,8 @@ body {
 
 /* Logo styles */
 .logo {
-    font-size: 1.5rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 400;
     margin: 10px 0;
 }
 

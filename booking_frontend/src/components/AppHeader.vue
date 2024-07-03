@@ -61,24 +61,18 @@ export default {
                     key: '1'
                 },
                 {
-                    label: 'Hóa đơn',
-                    icon: 'fa-solid fa-file-invoice',
-                    to: '/tuyenduong',
+                    label: 'Tìm chuyến xe',
+                    icon: 'fa-solid fa-van-shuttle',
+                    to: '/chuyenxe/searchChuyenXe',
                     key: '2'
                 },
-                {
-                    label: 'Liên hệ',
-                    icon: '',
-                    to: '/nhaxe',
-                    key: '3'
-                }
             ],
             rightMenuItems: [
                 {
                     label: 'Đăng nhập',
                     icon: 'fa-solid fa-right-to-bracket',
                     to: '/login',
-                    key: '4'
+                    key: '3'
                 },
                 {
                     label: 'Đăng ký',

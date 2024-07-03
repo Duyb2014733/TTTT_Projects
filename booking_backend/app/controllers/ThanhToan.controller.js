@@ -74,3 +74,14 @@ exports.deleteAllThanhToans = async (req, res, next) => {
     next(new ApiError(500, error.message));
   }
 };
+
+exports.getThanhToansByCustomerId = async (req, res) => {
+  try {
+    const { customerId } = req.params;
+    const thanhToans =
+      await thanhToanService.getThanhToansByCustomerId(customerId);
+    res.status(200).json(thanhToans);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

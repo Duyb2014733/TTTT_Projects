@@ -94,3 +94,18 @@ exports.deleteViTriGhe = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.updateSeatsStatus = async (req, res) => {
+  const { seatIds, newStatus } = req.body;
+  try {
+    const updatedSeats = await viTriGheService.updateSeatsStatus(
+      seatIds,
+      newStatus
+    );
+    res.status(200).json(updatedSeats);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error updating seat status", error: error.message });
+  }
+};

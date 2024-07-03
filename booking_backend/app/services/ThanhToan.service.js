@@ -18,7 +18,9 @@ class ThanhToanService {
       if (!mongoose.Types.ObjectId.isValid(ThanhToanId)) {
         throw new Error("Invalid ThanhToan ID");
       }
-      return await ThanhToan.findById(ThanhToanId).populate("customer_id");
+      return await ThanhToan.findById(ThanhToanId)
+        .populate("customer_id")
+        .populate("ve_id");
     } catch (error) {
       throw error;
     }
@@ -27,7 +29,7 @@ class ThanhToanService {
   // Lấy danh sách tất cả các thanh toán
   async getAllThanhToans() {
     try {
-      return await ThanhToan.find().populate("customer_id");
+      return await ThanhToan.find().populate("customer_id").populate("ve_id");
     } catch (error) {
       throw error;
     }
@@ -41,7 +43,9 @@ class ThanhToanService {
       }
       return await ThanhToan.findByIdAndUpdate(ThanhToanId, ThanhToanData, {
         new: true,
-      }).populate("customer_id");
+      })
+        .populate("customer_id")
+        .populate("ve_id");
     } catch (error) {
       throw error;
     }
@@ -65,6 +69,19 @@ class ThanhToanService {
       return await ThanhToan.deleteMany({});
     } catch (error) {
       throw error;
+    }
+  }
+
+  async getThanhToansByCustomerId(customerId) {
+    try {
+      const thanhToans = await ThanhToan.find({
+        customer_id: customerId,
+      })
+        .populate("customer_id")
+        .populate("ve_id");
+      return thanhToans;
+    } catch (error) {
+      throw new Error(`Error fetching thanh toans: ${error.message}`);
     }
   }
 }

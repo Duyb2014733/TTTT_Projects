@@ -1,31 +1,34 @@
 <template>
-    <a-row gutter={16}>
-        <a-col :span="18">
-            <div style="padding: 10px">
-                <a-card title="Thông tin thanh toán" :bordered="false">
-                    <a-table :columns="columns" :dataSource="paymentData" rowKey="id" />
-                </a-card>
-            </div>
-        </a-col>
-        <a-col :span="6">
-            <div style="background: #ececec; padding: 10px">
-                <a-card title="Thông tin người dùng" :bordered="false">
-                    <p v-if="selectedKhachHang">Tên: {{ selectedKhachHang.name }}</p>
-                    <p v-if="selectedKhachHang">Email: {{ selectedKhachHang.email }}</p>
-                    <p v-if="selectedKhachHang">Số điện thoại: {{ selectedKhachHang.phone }}</p>
-                    <p v-if="selectedKhachHang">Địa chỉ: {{ selectedKhachHang.address }}</p>
-                </a-card>
-            </div>
-        </a-col>
-    </a-row>
+    <div class="container">
+        <a-row :gutter="16">
+            <a-col :span="18">
+                <div style="padding: 10px">
+                    <a-card title="Thông tin thanh toán" :bordered="false">
+                        <a-table :columns="columns" :dataSource="paymentData" rowKey="_id" />
+                    </a-card>
+                </div>
+            </a-col>
+            <a-col :span="6">
+                <div class="ececec-background">
+                    <a-card title="Thông tin người dùng" :bordered="false">
+                        <p v-if="selectedKhachHang">Tên: {{ selectedKhachHang.name }}</p>
+                        <p v-if="selectedKhachHang">Email: {{ selectedKhachHang.email }}</p>
+                        <p v-if="selectedKhachHang">Số điện thoại: {{ selectedKhachHang.phone }}</p>
+                        <p v-if="selectedKhachHang">Địa chỉ: {{ selectedKhachHang.address }}</p>
+                    </a-card>
+                </div>
+            </a-col>
+        </a-row>
+    </div>
 </template>
 
 <script>
 import KhachHangService from '@/services/KhachHangService';
 import ThanhToanService from '@/services/ThanhToanService';
 import { notification } from 'ant-design-vue';
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
     data() {
         return {
             selectedKhachHang: null,
@@ -33,18 +36,32 @@ export default {
             columns: [
                 {
                     title: 'Mã thanh toán',
-                    dataIndex: 'maThanhToan',
-                    key: 'maThanhToan',
+                    dataIndex: '_id',
+                    key: '_id',
                 },
                 {
-                    title: 'Ngày thanh toán',
-                    dataIndex: 'ngayThanhToan',
-                    key: 'ngayThanhToan',
+                    title: 'Số vé',
+                    dataIndex: 've_id',
+                    key: 've_id',
+                    customRender: ({ text }) => text.length,
                 },
                 {
                     title: 'Số tiền',
-                    dataIndex: 'soTien',
-                    key: 'soTien',
+                    dataIndex: 'amount',
+                    key: 'amount',
+                    customRender: ({ text }) => `${text.toLocaleString()} đ`,
+                },
+                {
+                    title: 'Ngày thanh toán',
+                    dataIndex: 'payment_date',
+                    key: 'payment_date',
+                    customRender: ({ text }) => new Date(text).toLocaleDateString('vi-VN'),
+                },
+                {
+                    title: 'Phương thức thanh toán',
+                    dataIndex: 'payment_method',
+                    key: 'payment_method',
+                    customRender: ({ text }) => this.getPaymentMethodText(text),
                 },
             ],
         };
@@ -58,21 +75,26 @@ export default {
                     this.selectedKhachHang = await KhachHangService.getKhachHangById(idKhachHang, token);
                 } else {
                     console.error("No access token or customer ID found");
+                    this.showNotification('error', 'Không thể lấy thông tin khách hàng. Vui lòng đăng nhập lại.');
                 }
             } catch (error) {
                 console.error("Error fetching customer data:", error);
+                this.showNotification('error', 'Đã xảy ra lỗi khi lấy thông tin khách hàng.');
             }
         },
         async fetchPaymentData() {
             try {
                 const token = localStorage.getItem('accessToken');
-                if (token) {
-                    this.paymentData = await ThanhToanService.getAllThanhToans(token);
+                const idKhachHang = localStorage.getItem('idKhachHang');
+                if (token && idKhachHang) {
+                    this.paymentData = await ThanhToanService.getThanhToansByCustomerId(idKhachHang, token);
                 } else {
-                    console.error("No access token found");
+                    console.error("No access token or customer ID found");
+                    this.showNotification('error', 'Không thể lấy thông tin thanh toán. Vui lòng đăng nhập lại.');
                 }
             } catch (error) {
                 console.error("Error fetching payment data:", error);
+                this.showNotification('error', 'Đã xảy ra lỗi khi lấy thông tin thanh toán.');
             }
         },
         showNotification(type, message) {
@@ -81,16 +103,24 @@ export default {
                 description: message,
             });
         },
+        getPaymentMethodText(method) {
+            const methods = {
+                'cash': 'Tiền mặt',
+                'card': 'Thẻ tín dụng',
+                'transfer': 'Chuyển khoản'
+            };
+            return methods[method] || method;
+        },
     },
     mounted() {
         this.fetchKhachHang();
         this.fetchPaymentData();
     },
-};
+});
 </script>
 
 <style scoped>
-/* General styles */
+/* Styles remain the same as in the previous version */
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -99,7 +129,6 @@ body {
     background-color: #fff;
 }
 
-/* Card and table styles */
 .a-card {
     margin-bottom: 16px;
     border-radius: 8px;
@@ -122,7 +151,6 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Miscellaneous */
 .ms-2 {
     margin-left: 10px;
 }

@@ -2,11 +2,11 @@ const ViTriGhe = require("../models/ViTriGhe.model");
 
 class ViTriGheService {
   async getAllViTriGhe() {
-    return await ViTriGhe.find().populate("xe");
+    return await ViTriGhe.find().populate("vitrighe_vehicle");
   }
 
   async getViTriGheById(id) {
-    return await ViTriGhe.findById(id).populate("xe");
+    return await ViTriGhe.findById(id).populate("vitrighe_vehicle");
   }
 
   async createViTriGhe(ViTriGheData) {
@@ -29,6 +29,19 @@ class ViTriGheService {
       return vitrigheList;
     } catch (error) {
       throw new Error("Error fetching seat information: " + error.message);
+    }
+  }
+
+  async updateSeatsStatus(seatIds, newStatus) {
+    try {
+      const updatedSeats = await ViTriGhe.updateMany(
+        { _id: { $in: seatIds } },
+        { vitrighe_status: newStatus },
+        { new: true }
+      );
+      return updatedSeats;
+    } catch (error) {
+      throw new Error("Error updating seat status: " + error.message);
     }
   }
 }

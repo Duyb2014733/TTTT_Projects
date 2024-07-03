@@ -62,7 +62,7 @@
 
         <!-- Filters and Trip Results Section -->
         <a-layout has-sider>
-            <a-layout-sider width="300" class="filter-sidebar">
+            <!-- <a-layout-sider width="300" class="filter-sidebar">
                 <h2 class="filter-title">Bộ Lọc</h2>
                 <a-form @submit.prevent="applyFilters">
                     <a-form-item label="Giờ Đi">
@@ -84,13 +84,12 @@
                         </a-button>
                     </a-form-item>
                 </a-form>
-            </a-layout-sider>
+            </a-layout-sider> -->
 
             <a-layout-content class="content">
-                <h1 class="title">Kết Quả Tìm Kiếm Chuyến Đi</h1>
+                <!-- <h1 class="title">Kết Quả Tìm Kiếm Chuyến Đi</h1> -->
                 <a-spin :spinning="loading">
-                    <a-alert v-if="error" type="error" :message="error" show-icon />
-                    <a-empty v-else-if="filteredTrips.length === 0"
+                    <a-empty v-if="error && filteredTrips.length === 0"
                         description="Không tìm thấy chuyến đi nào phù hợp với tiêu chí tìm kiếm." />
                     <div v-else>
                         <a-card v-for="trip in filteredTrips" :key="trip.chuyenXe._id" class="trip-card"
@@ -247,8 +246,10 @@ export default {
             return new Date(dateString).toLocaleString();
         },
         bookTrip(trip) {
-            this.showNotification('success', `Đã xác nhận đặt vé: ${trip.chuyenXe.chuyenXe_name}`);
-            console.log('Đặt chuyến đi:', trip);
+            this.$router.push({
+                name: 'DatVe',
+                params: { id: trip.chuyenXe._id }
+            });
         },
         applyFilters() {
             this.showNotification('success', 'Đã áp dụng bộ lọc');

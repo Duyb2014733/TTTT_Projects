@@ -3,6 +3,13 @@ const router = express.Router();
 const middlewareController = require("../controllers/Middleware.controller");
 const viTriGheController = require("../controllers/ViTriGhe.controller");
 
+router.route("/xe/:xeId").get(viTriGheController.getViTriGheByXeId);
+router.put(
+  "/updateSeatsStatus",
+  middlewareController.verifyToken,
+  viTriGheController.updateSeatsStatus
+);
+
 router
   .route("/")
   .post(
@@ -16,7 +23,5 @@ router
   .get(viTriGheController.getViTriGheById)
   .put(middlewareController.verifyToken, viTriGheController.updateViTriGhe)
   .delete(middlewareController.verifyToken, viTriGheController.deleteViTriGhe);
-
-router.route("/xe/:xeId").get(viTriGheController.getViTriGheByXeId);
 
 module.exports = router;

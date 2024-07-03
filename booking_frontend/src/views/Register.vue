@@ -63,7 +63,7 @@ export default {
                     this.$router.push({ name: 'Login' });
                 }, 2000);
             } catch (error) {
-                this.showNotification('error', error.message || 'Lỗi khi đăng ký thông tin khách hàng!');
+                this.showNotification('error', 'Lỗi khi đăng ký thông tin khách hàng!');
             }
         },
         showNotification(type, message) {
