@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid">
+    <div class="container">
         <div class="header">
             <h1>Quản lý Chuyến Xe</h1>
             <a-button type="primary" @click="showAddModal">
