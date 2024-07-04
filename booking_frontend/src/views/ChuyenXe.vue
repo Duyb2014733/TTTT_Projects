@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div class="header">
             <h1>Quản lý Chuyến Xe</h1>
             <a-button type="primary" @click="showAddModal">
@@ -12,7 +12,7 @@
         <a-table :columns="columns" :dataSource="ChuyenXes" rowKey="_id">
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
-                    <a-button @click="showEditModal(record)">
+                    <a-button danger @click="showEditModal(record)">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </a-button>
                     <a-button type="primary" danger @click="deleteRecord(record._id)" style="margin-left: 10px;">

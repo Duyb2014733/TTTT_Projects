@@ -18,13 +18,12 @@ export default {
             searchParams: {
                 departure_city: '',
                 arrival_city: '',
-                departure_date: ''  // Changed from departureDate for consistency
+                departure_date: ''
             }
         }
     },
     methods: {
         handleSearch(data) {
-            // Validate incoming data
             if (!data.departure_city || !data.arrival_city || !data.departure_date) {
                 console.error('Invalid search data', data);
                 return;
@@ -32,7 +31,6 @@ export default {
 
             this.searchParams = { ...data };
 
-            // Use try-catch for error handling during navigation
             try {
                 this.$router.push({
                     name: 'SearchChuyeXe',
@@ -40,7 +38,6 @@ export default {
                 });
             } catch (error) {
                 console.error('Navigation error:', error);
-                // Handle navigation error (e.g., show an error message to the user)
             }
         }
     }
